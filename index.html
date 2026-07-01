@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC | Produção de Conteúdo – Sankhya</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:#f0f4f8;min-height:100vh;color:#172b4d}
+.header{background:linear-gradient(135deg,#0a1628 0%,#0f1f3d 60%,#162d52 100%);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:3px solid #2ecc52;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.header-left{display:flex;align-items:center;gap:16px}
+.header-logo{height:28px;object-fit:contain}
+.header-div{width:1px;height:32px;background:rgba(255,255,255,.2)}
+.header-titles{display:flex;flex-direction:column;gap:1px}
+.header-title{color:#fff;font-size:14px;font-weight:700;letter-spacing:.3px;line-height:1.2}
+.header-sub{color:#2ecc52;font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:10px}
+.tabs-bar{background:#0a1628;padding:0 28px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:64px;z-index:99;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.filters-bar{display:flex;align-items:center;gap:8px;flex-shrink:0;padding:8px 0}
+.filter-select{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);border-radius:7px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;outline:none;transition:all .15s}
+.filter-select:hover{border-color:rgba(255,255,255,.3)}
+.filter-select:focus{border-color:#2ecc52}
+.filter-select option{background:#0f1f3d;color:#fff}
+.filter-clear{background:transparent;color:#f59e0b;border:1.5px solid #f59e0b;border-radius:7px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.filter-clear:hover{background:#f59e0b;color:#0f1f3d}
+.header-tabs{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:10px 0}
+.board-tab{display:flex;align-items:center;gap:6px;background:transparent;border:1.5px solid rgba(255,255,255,.18);border-radius:7px;padding:7px 14px;cursor:pointer;color:rgba(255,255,255,.55);font-size:13px;font-weight:600;white-space:nowrap;transition:all .15s}
+.board-tab:hover{border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.85)}
+.board-tab.active{background:rgba(46,204,82,.12);border-color:#2ecc52;color:#fff;box-shadow:0 0 0 1px #2ecc52 inset}
+.tab-title{outline:none;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.tab-title[contenteditable="true"]:focus{background:rgba(255,255,255,.1);padding:1px 4px;border-radius:3px}
+.tab-close{font-size:11px;color:rgba(255,255,255,.4);padding:0 2px;border-radius:3px;line-height:1}
+.tab-close:hover{background:rgba(255,255,255,.15);color:#fff}
+.board-tab-add{background:transparent;border:1.5px dashed rgba(255,255,255,.25);border-radius:7px;padding:7px 12px;cursor:pointer;color:rgba(255,255,255,.45);font-size:14px;font-weight:600;transition:all .15s;flex-shrink:0}
+.board-tab-add:hover{border-color:#2ecc52;color:#2ecc52}
+.btn-export{background:transparent;color:#2ecc52;border:1.5px solid #2ecc52;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;letter-spacing:.3px}
+.card-search-wrap{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:7px;padding:6px 10px;transition:border .15s}
+.card-search-wrap:focus-within{border-color:#2ecc52}
+.card-search-icon{font-size:12px;opacity:.6;flex-shrink:0}
+.card-search-input{background:none;border:none;outline:none;color:#fff;font-size:12px;font-family:monospace;width:110px}
+.card-search-input::placeholder{color:rgba(255,255,255,.4);font-family:inherit}
+.btn-export:hover{background:#2ecc52;color:#0f1f3d}
+.btn-new{background:#2ecc52;color:#0f1f3d;border:none;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 2px 8px rgba(46,204,82,.3)}
+.btn-new:hover{background:#27ae47}
+.user-name{color:rgba(255,255,255,.65);font-size:12px}
+.user-badge{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#2ecc52,#27ae47);color:#0f1f3d;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+
+/* NOTIFICATION BELL */
+.bell-wrap{position:relative}
+.bell-btn{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .15s;position:relative}
+.bell-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+.bell-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;min-width:16px;height:16px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid #0a1628}
+.notif-panel{position:absolute;top:44px;right:0;width:340px;max-height:420px;overflow-y:auto;background:#fff;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.25);border:1px solid #e8ecf0;z-index:3000;display:none}
+.notif-panel.open{display:block}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eaecf0}
+.notif-header h4{font-size:13px;font-weight:700;color:#172b4d;margin:0}
+.notif-mark-all{font-size:11px;color:#2ecc52;cursor:pointer;font-weight:600;background:none;border:none}
+.notif-mark-all:hover{text-decoration:underline}
+.notif-item{display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid #f4f5f7;cursor:pointer;transition:background .15s}
+.notif-item:hover{background:#f8fafc}
+.notif-item.unread{background:#f0fdf4}
+.notif-item.unread:hover{background:#e8fbee}
+.notif-dot{width:8px;height:8px;border-radius:50%;background:#2ecc52;flex-shrink:0;margin-top:6px}
+.notif-item.read .notif-dot{background:transparent}
+.notif-body{flex:1;min-width:0}
+.notif-text{font-size:12px;color:#172b4d;line-height:1.4}
+.notif-text b{font-weight:700}
+.notif-meta{font-size:10.5px;color:#94a3b8;margin-top:2px}
+.notif-empty{padding:30px 14px;text-align:center;font-size:12px;color:#94a3b8}
+
+/* MENTION DROPDOWN (in comment box) */
+.mention-dropdown{position:absolute;top:100%;left:0;margin-top:4px;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);border:1px solid #e8ecf0;z-index:3001;width:220px;max-height:180px;overflow-y:auto;display:none}
+.mention-dropdown.open{display:block}
+.mention-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;font-size:12.5px;color:#172b4d}
+.mention-opt:hover,.mention-opt.highlighted{background:#f0fdf4}
+.mention-opt-av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mention-empty{padding:10px;font-size:11.5px;color:#94a3b8;text-align:center}
+
+/* MENTION BADGE (rendered in comment text) */
+.mention-badge{background:#e0f2fe;color:#0369a1;font-weight:700;padding:1px 5px;border-radius:4px;white-space:nowrap}
+.board-wrap{padding:24px 28px;overflow-x:auto;min-height:calc(100vh - 64px)}
+.board{display:flex;gap:20px;align-items:flex-start;min-height:calc(100vh - 112px)}
+.column{width:290px;min-width:290px;display:flex;flex-direction:column;max-height:calc(100vh - 112px)}
+.col-header{padding:0 0 10px 0;display:flex;align-items:center;justify-content:space-between}
+.col-title-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.col-accent{width:4px;height:22px;border-radius:2px;flex-shrink:0}
+.col-title{font-size:12px;font-weight:800;color:#172b4d;flex:1;border:none;background:none;font-family:inherit;cursor:text;outline:none;padding:2px 4px;border-radius:3px;text-transform:uppercase;letter-spacing:.7px}
+.col-title:hover,.col-title:focus{background:rgba(0,0,0,.07)}
+.col-count{background:#e2e8f0;color:#64748b;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.col-menu{background:none;border:none;cursor:pointer;color:#94a3b8;font-size:16px;padding:3px 6px;border-radius:4px}
+.col-menu:hover{background:rgba(0,0,0,.08);color:#172b4d}
+.col-collapse-btn{background:none;border:none;cursor:pointer;color:#94a3b8;font-size:12px;padding:3px 4px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .18s}
+.col-collapse-btn:hover{background:rgba(0,0,0,.08);color:#172b4d}
+.col-collapse-btn.collapsed{transform:rotate(-90deg)}
+.column.is-collapsed .col-body{display:none}
+.col-body{background:#fff;border-radius:12px;flex:1;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.04)}
+.col-cards{padding:8px;overflow-y:auto;flex:1;min-height:40px}
+.col-footer{padding:4px 8px 8px;border-top:1px solid #f1f5f9}
+.add-card-btn{width:100%;background:none;border:none;text-align:left;padding:8px 10px;border-radius:7px;color:#94a3b8;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;font-weight:500}
+.add-card-btn:hover{background:#f0fdf4;color:#16a34a}
+.add-col-btn{min-width:180px;background:rgba(255,255,255,.55);border:2px dashed rgba(0,0,0,.12);border-radius:12px;padding:14px 20px;color:#94a3b8;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;height:52px;transition:all .15s}
+.add-col-btn:hover{background:rgba(255,255,255,.9);color:#172b4d;border-color:#2ecc52}
+.acc-afazer{background:#94a3b8}
+.acc-andamento{background:#2ecc52}
+.acc-revisao{background:#f59e0b}
+.acc-aprovacao{background:#8b5cf6}
+.acc-concluido{background:#0f1f3d}
+.acc-custom{background:#94a3b8}
+.card{background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:7px;cursor:pointer;border:1px solid #e8ecf0;border-left:3px solid #e8ecf0;transition:box-shadow .15s,transform .1s,border-color .15s;position:relative;user-select:none}
+.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.09);transform:translateY(-1px);border-left-color:#2ecc52}
+.card.dragging{opacity:.4;transform:rotate(1.5deg) scale(.97)}
+.card-labels{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.card-label{font-size:10px;font-weight:700;color:#fff;padding:2px 8px;border-radius:4px;letter-spacing:.3px;text-shadow:0 1px 2px rgba(0,0,0,.2);line-height:1.4}
+.card-num{font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:.3px;display:block;margin-bottom:3px;font-family:monospace}
+.card-title{font-size:13px;color:#172b4d;font-weight:600;line-height:1.45;margin-bottom:8px;word-break:break-word}
+.card-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.card-badges{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.card-badge{font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:2px}
+.card-avatars{display:flex}
+.card-avatar{width:22px;height:22px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #fff;margin-left:-5px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.card-avatar:first-child{margin-left:0}
+.card-due{font-size:11px;padding:2px 7px;border-radius:10px;display:flex;align-items:center;gap:3px;font-weight:600}
+.due-over{background:#fef2f2;color:#dc2626}
+.due-today{background:#fefce8;color:#ca8a04}
+.due-ok{background:#f0fdf4;color:#16a34a}
+.prio-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:3px;margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
+.prio-alta{background:#fef2f2;color:#dc2626}
+.prio-baixa{background:#f0fdf4;color:#16a34a}
+.prio-aguardando{background:#fefce8;color:#ca8a04}
+.prog-bar{height:3px;background:#e2e8f0;border-radius:2px;overflow:hidden;margin-top:7px}
+.prog-fill{height:100%;background:#2ecc52;border-radius:2px;transition:width .3s}
+.prog-text{font-size:10px;color:#94a3b8;margin-top:2px}
+.drag-ph{background:#f0f4f8;border:2px dashed #cbd5e1;border-radius:8px;height:56px;margin-bottom:7px}
+.card-form{background:#f8fafc;border-radius:8px;padding:10px 12px;margin-bottom:7px;border:1.5px solid #2ecc52}
+.card-form textarea{width:100%;border:none;outline:none;resize:none;font-size:13px;font-family:inherit;color:#172b4d;min-height:56px;background:transparent}
+.card-form-btns{display:flex;gap:6px;margin-top:8px;align-items:center}
+.btn-sm{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:none}
+.btn-ok{background:#2ecc52;color:#0f1f3d}
+.btn-ok:hover{background:#27ae47}
+.btn-cancel{background:none;color:#94a3b8}
+.btn-cancel:hover{background:rgba(0,0,0,.06)}
+.modal-overlay{position:fixed;inset:0;background:rgba(9,30,66,.6);display:flex;align-items:flex-start;justify-content:center;z-index:1000;padding:32px 16px;overflow-y:auto}
+.modal{background:#fff;border-radius:14px;width:820px;max-width:96vw;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.25);overflow:hidden}
+.modal-hdr{padding:20px 56px 16px 24px;background:linear-gradient(135deg,#0a1628,#0f1f3d);display:flex;align-items:flex-start;gap:12px;border-bottom:3px solid #2ecc52}
+.modal-hdr-icon{color:rgba(255,255,255,.5);font-size:18px;margin-top:4px;flex-shrink:0}
+.modal-title{font-size:18px;font-weight:700;color:#fff;background:none;border:none;width:100%;resize:none;outline:none;line-height:1.35;font-family:inherit;padding:0}
+.modal-title:hover,.modal-title:focus{background:rgba(255,255,255,.1);padding:4px 8px;border-radius:5px}
+.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.1);border:none;cursor:pointer;color:#fff;font-size:18px;padding:4px 8px;border-radius:5px;line-height:1}
+.modal-close:hover{background:rgba(255,255,255,.2)}
+.modal-body{display:flex;gap:0}
+.modal-main{flex:1;min-width:0;padding:20px 22px 24px 24px}
+.modal-side{width:210px;min-width:210px;flex-shrink:0;padding:20px 16px 24px;background:#f8fafc;border-left:1px solid #e8ecf0;border-radius:0 0 14px 0}
+.sec-title{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.modal-section{margin-bottom:20px}
+textarea.minput{width:100%;background:#f8fafc;border:1.5px solid #e8ecf0;border-radius:8px;padding:10px 12px;font-size:13px;color:#172b4d;font-family:inherit;resize:vertical;min-height:80px;outline:none;transition:border .15s,background .15s}
+.desc-display{width:100%;background:#f8fafc;border:1.5px solid #e8ecf0;border-radius:8px;padding:10px 12px;font-size:13px;color:#172b4d;font-family:inherit;min-height:80px;cursor:text;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+.desc-display:empty::before{content:'Descrição detalhada da atividade...';color:#94a3b8}
+.desc-display:hover{border-color:#2ecc52}
+.content-link{color:#2563eb;text-decoration:underline;word-break:break-all}
+.content-link:hover{color:#1d4ed8}
+textarea.minput:focus{background:#fff;border-color:#2ecc52}
+.side-lbl{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;margin-top:16px}
+.side-lbl:first-child{margin-top:0}
+.side-btn{width:100%;background:#fff;border:1.5px solid #e8ecf0;padding:8px 10px;border-radius:7px;text-align:left;font-size:12px;color:#172b4d;cursor:pointer;display:flex;align-items:center;gap:8px;margin-bottom:4px;font-family:inherit;font-weight:600;transition:all .15s}
+.side-btn:hover{background:#f0fdf4;border-color:#2ecc52;color:#16a34a}
+select.msel{width:100%;background:#fff;border:1.5px solid #e8ecf0;border-radius:7px;padding:7px 10px;font-size:12px;color:#172b4d;font-family:inherit;outline:none;cursor:pointer;font-weight:600}
+input[type=date].mdate{width:100%;background:#fff;border:1.5px solid #e8ecf0;border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;color:#172b4d;outline:none;cursor:pointer;font-weight:600}
+input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
+.chk-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0}
+.chk-item input[type=checkbox]{width:15px;height:15px;cursor:pointer;flex-shrink:0;accent-color:#2ecc52;margin-top:3px}
+.chk-text{font-size:13px;color:#172b4d;flex:1;cursor:pointer;word-break:break-word;overflow-wrap:break-word;line-height:1.5;min-width:0}
+.chk-text.done{text-decoration:line-through;color:#b0b8c4}
+.chk-del{background:none;border:none;color:#cbd5e1;cursor:pointer;font-size:14px;opacity:0;padding:2px 4px;border-radius:3px;flex-shrink:0;margin-top:2px}
+.chk-item:hover .chk-del{opacity:1}
+.chk-del:hover{background:#fef2f2;color:#dc2626}
+.chk-new{width:100%;background:#f8fafc;border:1.5px solid #e8ecf0;border-radius:7px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;margin-top:6px;color:#172b4d}
+.chk-new:focus{border-color:#2ecc52;background:#fff}
+.comment{display:flex;gap:10px;margin-bottom:12px}
+.comm-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.comm-body{flex:1}
+.comm-author{font-size:12px;font-weight:700;color:#172b4d}
+.comm-time{font-size:10px;color:#b0b8c4;margin-left:6px}
+.comm-text{font-size:13px;color:#172b4d;margin-top:3px;background:#f8fafc;padding:8px 10px;border-radius:7px;border:1px solid #e8ecf0}
+.comm-input-wrap{display:flex;gap:8px;align-items:flex-end}
+.comm-send{background:#2ecc52;color:#0f1f3d;border:none;padding:8px 14px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:700;white-space:nowrap}
+.comm-send:hover{background:#27ae47}
+.lbl-grid{display:flex;flex-direction:column;gap:4px}
+.lbl-row{display:flex;align-items:center;gap:5px;cursor:pointer;border-radius:6px;border:2px solid transparent;overflow:hidden}
+.lbl-row:hover{border-color:rgba(0,0,0,.2)}
+.lbl-row.lbl-active{border-color:#0f1f3d}
+.lbl-flag{flex:1;height:30px;display:flex;align-items:center;padding:0 10px}
+.lbl-name{flex:1;border:none;background:transparent;font-size:11px;font-weight:700;font-family:inherit;color:#fff;outline:none;padding:0;text-shadow:0 1px 2px rgba(0,0,0,.25);cursor:pointer;letter-spacing:.3px}
+.lbl-name::placeholder{color:rgba(255,255,255,.6)}
+.lbl-chk{width:14px;height:14px;flex-shrink:0;cursor:pointer;accent-color:#2ecc52;margin-right:6px}
+.active-labels{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.act-lbl{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;cursor:pointer;color:#fff;display:inline-flex;align-items:center;gap:4px;letter-spacing:.3px}
+.act-lbl:hover{opacity:.8}
+.members-wrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.member-chip{display:flex;align-items:center;gap:5px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:20px;padding:3px 10px 3px 4px;font-size:12px;color:#16a34a;cursor:pointer;font-weight:600}
+.member-chip:hover{background:#fef2f2;border-color:#fecaca;color:#dc2626}
+.chip-av{width:20px;height:20px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.mbr-opt{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:12px;color:#172b4d;font-weight:500}
+.mbr-opt:hover{background:#f0fdf4}
+.mbr-check{margin-left:auto;color:#2ecc52;font-size:13px;font-weight:800}
+.dropdown{position:fixed;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:1px solid #e8ecf0;z-index:2000;min-width:180px;padding:6px 0}
+.dd-item{padding:8px 14px;font-size:13px;color:#172b4d;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:500}
+.dd-item:hover{background:#f8fafc}
+.dd-item.danger{color:#dc2626}
+.dd-item.danger:hover{background:#fef2f2}
+.dd-sep{height:1px;background:#e8ecf0;margin:4px 0}
+.auth-overlay{position:fixed;inset:0;background-color:#0a1628;background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI3MDAiIHZpZXdCb3g9IjAgMCAxMjAwIDcwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iYmdHcmFkNiIgeDE9IjAiIHkxPSIwIiB4Mj0iMTIwMCIgeTI9IjcwMCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMGExNjI4Ii8+CjxzdG9wIG9mZnNldD0iNTUlIiBzdG9wLWNvbG9yPSIjMGYxZjNkIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzE2MmQ1MiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjcwMCIgZmlsbD0idXJsKCNiZ0dyYWQ2KSIvPgo8Y2lyY2xlIGN4PSIxMTAwIiBjeT0iMTAwIiByPSIxNjAiIGZpbGw9IiMyZWNjNTIiIG9wYWNpdHk9IjAuMDUiLz4KPGNpcmNsZSBjeD0iODAiIGN5PSI2MDAiIHI9IjE0MCIgZmlsbD0iIzJlY2M1MiIgb3BhY2l0eT0iMC4wNSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjgwIiByPSI5MCIgZmlsbD0iIzJlY2M1MiIgb3BhY2l0eT0iMC4wNCIvPgo8Y2lyY2xlIGN4PSIxMTQwIiBjeT0iNjQwIiByPSIxMDAiIGZpbGw9IiMyZWNjNTIiIG9wYWNpdHk9IjAuMDQiLz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzAsOTApIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjE5MCIgaGVpZ2h0PSIxNzAiIHJ4PSIxNCIgZmlsbD0iIzE2MjQzZiIgc3Ryb2tlPSIjMmVjYzUyIiBzdHJva2Utd2lkdGg9IjEuNCIgb3BhY2l0eT0iMC45NyIvPgo8cmVjdCB4PSIyMiIgeT0iMjYiIHdpZHRoPSI5NSIgaGVpZ2h0PSIxMyIgcng9IjYiIGZpbGw9IiMyZWNjNTIiLz4KPHJlY3QgeD0iMjIiIHk9IjU2IiB3aWR0aD0iMTQ2IiBoZWlnaHQ9IjkiIHJ4PSI0IiBmaWxsPSIjM2E0ZDZlIi8+CjxyZWN0IHg9IjIyIiB5PSI3NCIgd2lkdGg9IjExMCIgaGVpZ2h0PSI5IiByeD0iNCIgZmlsbD0iIzNhNGQ2ZSIvPgo8cmVjdCB4PSIyMiIgeT0iMTAyIiB3aWR0aD0iMTQ2IiBoZWlnaHQ9IjM0IiByeD0iOSIgZmlsbD0iIzFjMmY0ZiIgc3Ryb2tlPSIjMmEzZjYwIiBzdHJva2Utd2lkdGg9IjAuNyIvPgo8cmVjdCB4PSIzNSIgeT0iMTE2IiB3aWR0aD0iNjIiIGhlaWdodD0iOSIgcng9IjQiIGZpbGw9IiM1ZmQ5N2UiLz4KPGNpcmNsZSBjeD0iMTUwIiBjeT0iMTE5IiByPSI5IiBmaWxsPSIjMmVjYzUyIi8+CjwvZz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTQwLDkwKSI+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxOTAiIGhlaWdodD0iMTcwIiByeD0iMTQiIGZpbGw9IiMxNjI0M2YiIHN0cm9rZT0iIzNhNGQ2ZSIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KPHJlY3QgeD0iMjIiIHk9IjMwIiB3aWR0aD0iODAiIGhlaWdodD0iMTMiIHJ4PSI2IiBmaWxsPSIjNWZkOTdlIi8+CjxyZWN0IHg9IjIyIiB5PSI2MCIgd2lkdGg9IjE0NiIgaGVpZ2h0PSIzMCIgcng9IjkiIGZpbGw9IiMxYzJmNGYiLz4KPHJlY3QgeD0iMzUiIHk9Ijc0IiB3aWR0aD0iOTUiIGhlaWdodD0iOSIgcng9IjQiIGZpbGw9IiM3YThhYWIiLz4KPHJlY3QgeD0iMjIiIHk9Ijk4IiB3aWR0aD0iMTQ2IiBoZWlnaHQ9IjMwIiByeD0iOSIgZmlsbD0iIzFjMmY0ZiIvPgo8cmVjdCB4PSIzNSIgeT0iMTEyIiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjkiIHJ4PSI0IiBmaWxsPSIjN2E4YWFiIi8+CjxyZWN0IHg9IjIyIiB5PSIxMzYiIHdpZHRoPSIxNDYiIGhlaWdodD0iMjIiIHJ4PSI5IiBmaWxsPSIjMWEzYTI4IiBzdHJva2U9IiMyZWNjNTIiIHN0cm9rZS13aWR0aD0iMC43Ii8+CjxyZWN0IHg9IjM1IiB5PSIxNDUiIHdpZHRoPSI4MCIgaGVpZ2h0PSI5IiByeD0iNCIgZmlsbD0iIzVmZDk3ZSIvPgo8L2c+CjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcwLDUyMCkiPgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTkwIiBoZWlnaHQ9IjkwIiByeD0iMTQiIGZpbGw9IiMxNjI0M2YiIHN0cm9rZT0iIzNhNGQ2ZSIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjE5MCIgaGVpZ2h0PSIzOCIgcng9IjE0IiBmaWxsPSIjMmVjYzUyIi8+CjxyZWN0IHg9IjAiIHk9IjI0IiB3aWR0aD0iMTkwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjMmVjYzUyIi8+CjxnIHN0cm9rZT0iIzE2MjQzZiIgc3Ryb2tlLXdpZHRoPSIxLjYiPgo8bGluZSB4MT0iMjQiIHkxPSI1NiIgeDI9IjI0IiB5Mj0iNzAiLz4KPGxpbmUgeDE9IjUyIiB5MT0iNTYiIHgyPSI1MiIgeTI9IjcwIi8+CjxsaW5lIHgxPSI4MCIgeTE9IjU2IiB4Mj0iODAiIHkyPSI3MCIvPgo8bGluZSB4MT0iMTA4IiB5MT0iNTYiIHgyPSIxMDgiIHkyPSI3MCIvPgo8bGluZSB4MT0iMTM2IiB5MT0iNTYiIHgyPSIxMzYiIHkyPSI3MCIvPgo8bGluZSB4MT0iMTY0IiB5MT0iNTYiIHgyPSIxNjQiIHkyPSI3MCIvPgo8L2c+CjxnIGZpbGw9IiMzYTRkNmUiPgo8cmVjdCB4PSIxOCIgeT0iNTgiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgcng9IjMiLz4KPHJlY3QgeD0iNDYiIHk9IjU4IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHJ4PSIzIiBmaWxsPSIjMmVjYzUyIi8+CjxyZWN0IHg9Ijc0IiB5PSI1OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMyIvPgo8cmVjdCB4PSIxMDIiIHk9IjU4IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHJ4PSIzIi8+CjxyZWN0IHg9IjEzMCIgeT0iNTgiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgcng9IjMiIGZpbGw9IiM1ZmQ5N2UiLz4KPHJlY3QgeD0iMTU4IiB5PSI1OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMyIvPgo8L2c+CjwvZz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTQwLDUyMCkiPgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTkwIiBoZWlnaHQ9IjkwIiByeD0iMTQiIGZpbGw9IiMxNjI0M2YiIHN0cm9rZT0iIzNhNGQ2ZSIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KPHJlY3QgeD0iMjIiIHk9IjMyIiB3aWR0aD0iODYiIGhlaWdodD0iMTMiIHJ4PSI2IiBmaWxsPSIjMmVjYzUyIi8+CjxyZWN0IHg9IjIyIiB5PSI1OCIgd2lkdGg9IjE0NiIgaGVpZ2h0PSI5IiByeD0iNCIgZmlsbD0iIzdhOGFhYiIvPgo8L2c+Cjwvc3ZnPgo=');background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;z-index:9999}
+.auth-card{background:#fff;border-radius:16px;padding:28px 40px 32px;width:400px;max-width:95vw;box-shadow:0 24px 64px rgba(0,0,0,.4);text-align:center;border-top:4px solid #2ecc52}
+.auth-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+.auth-logo-outside{height:54px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))}
+.auth-sub{font-size:11px;color:#94a3b8;margin-bottom:28px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+.auth-lbl{font-size:11px;color:#94a3b8;font-weight:700;text-align:left;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.auth-inp{width:100%;border:1.5px solid #e8ecf0;border-radius:8px;padding:10px 13px;font-size:14px;font-family:inherit;color:#172b4d;outline:none;margin-bottom:12px;display:block;transition:border .15s}
+.auth-inp:focus{border-color:#2ecc52}
+.auth-btn{width:100%;background:#2ecc52;color:#0f1f3d;border:none;padding:12px;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;transition:all .2s;box-shadow:0 4px 12px rgba(46,204,82,.3)}
+.auth-btn:hover{background:#27ae47}
+.auth-toggle{font-size:13px;color:#94a3b8;margin-top:14px}
+.auth-toggle a{color:#2ecc52;cursor:pointer;font-weight:700;text-decoration:none}
+.auth-err{background:#fef2f2;color:#dc2626;font-size:13px;padding:8px 12px;border-radius:7px;margin-bottom:12px;font-weight:500}
+.setup-overlay{position:fixed;inset:0;background:rgba(9,30,66,.75);display:flex;align-items:center;justify-content:center;z-index:9998}
+.setup-card{background:#fff;border-radius:14px;padding:36px 40px;width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.3);border-top:4px solid #2ecc52}
+.setup-card h2{font-size:20px;font-weight:800;color:#0f1f3d;margin-bottom:6px}
+.setup-card p{font-size:13px;color:#94a3b8;margin-bottom:20px;line-height:1.6}
+.setup-inp{width:100%;border:1.5px solid #e8ecf0;border-radius:8px;padding:10px 13px;font-size:13px;font-family:monospace;color:#172b4d;outline:none;margin-bottom:12px;display:block}
+.setup-inp:focus{border-color:#2ecc52}
+.setup-btn{width:100%;background:#2ecc52;color:#0f1f3d;border:none;padding:12px;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px}
+.setup-btn:hover{background:#27ae47}
+.setup-step{background:#f8fafc;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#172b4d;line-height:1.7;border-left:3px solid #2ecc52}
+.setup-step code{background:#e2e8f0;padding:1px 6px;border-radius:4px;font-family:monospace;font-size:12px}
+.toast-wrap{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:5000}
+.toast{background:#0f1f3d;color:#fff;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.25);animation:slideIn .2s ease;border-left:3px solid #2ecc52}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.spinner{width:20px;height:20px;border:3px solid rgba(46,204,82,.2);border-top-color:#2ecc52;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{display:flex;align-items:center;justify-content:center;height:200px;color:#94a3b8;font-size:14px;gap:10px}
+</style>
+</head>
+<body>
+
+<div class="setup-overlay" id="setupOverlay" style="display:none">
+  <div class="setup-card">
+    <h2>⚙️ Configurar Supabase</h2>
+    <p>Cole as credenciais do seu projeto Supabase. Ficam salvas no navegador.</p>
+    <div class="setup-step">1. Acesse <strong>supabase.com</strong> → New Project<br>2. <strong>Settings → API Keys → Legacy</strong><br>3. Copie <strong>Project URL</strong> e <strong>anon public key</strong></div>
+    <label class="auth-lbl">Project URL</label>
+    <input class="setup-inp" id="setupUrl" placeholder="https://xyzxyz.supabase.co" type="url">
+    <label class="auth-lbl">Anon Key</label>
+    <input class="setup-inp" id="setupKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." type="text">
+    <div id="setupErr" class="auth-err" style="display:none"></div>
+    <button class="setup-btn" onclick="saveSupabaseConfig()">Salvar e continuar</button>
+  </div>
+</div>
+
+<div class="auth-overlay" id="authOverlay" style="display:none">
+  <div class="auth-wrap">
+    <img src="data:image/png;base64,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" alt="Sankhya" class="auth-logo-outside">
+    <div class="auth-card">
+    <div id="authErr" class="auth-err" style="display:none"></div>
+    <div id="loginForm" style="margin-top:8px">
+      <label class="auth-lbl">E-mail</label>
+      <input class="auth-inp" id="loginEmail" type="email" placeholder="voce@sankhya.com.br">
+      <label class="auth-lbl">Senha</label>
+      <input class="auth-inp" id="loginPwd" type="password" placeholder="••••••••">
+      <button class="auth-btn" onclick="doLogin()">Entrar</button>
+      <p class="auth-toggle">Não tem conta? <a onclick="toggleAuth()">Criar conta</a></p>
+    </div>
+    <div id="regForm" style="display:none">
+      <label class="auth-lbl">Nome completo</label>
+      <input class="auth-inp" id="regName" type="text" placeholder="Seu nome">
+      <label class="auth-lbl">E-mail</label>
+      <input class="auth-inp" id="regEmail" type="email" placeholder="voce@sankhya.com.br">
+      <label class="auth-lbl">Senha</label>
+      <input class="auth-inp" id="regPwd" type="password" placeholder="Mínimo 6 caracteres">
+      <button class="auth-btn" onclick="doRegister()">Criar conta</button>
+      <p class="auth-toggle">Já tem conta? <a onclick="toggleAuth()">Entrar</a></p>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="header" id="mainHeader" style="display:none">
+  <div class="header-left">
+    <img src="data:image/png;base64,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" alt="Sankhya" class="header-logo">
+    <div class="header-div"></div>
+    <div class="header-titles">
+      <span class="header-title">Universidade Corporativa</span>
+      <span class="header-sub">Produção de Conteúdo</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="card-search-wrap">
+      <span class="card-search-icon">🔍</span>
+      <input type="text" class="card-search-input" id="cardSearchInput" placeholder="Buscar por #ID" onkeydown="if(event.key==='Enter')searchCardById()">
+    </div>
+    <button class="btn-export" onclick="exportExcel()">⬇ Exportar Excel</button>
+    <button class="btn-new" onclick="openNewCardGlobal()">＋ Novo Card</button>
+    <div class="bell-wrap">
+      <button class="bell-btn" onclick="toggleNotifPanel()" title="Notificações">
+        🔔
+        <span class="bell-badge" id="bellBadge" style="display:none">0</span>
+      </button>
+      <div class="notif-panel" id="notifPanel">
+        <div class="notif-header">
+          <h4>Notificações</h4>
+          <button class="notif-mark-all" onclick="markAllNotifsRead()">Marcar todas como lidas</button>
+        </div>
+        <div id="notifList"></div>
+      </div>
+    </div>
+    <div style="width:1px;height:24px;background:rgba(255,255,255,.15)"></div>
+    <span class="user-name" id="userName"></span>
+    <div class="user-badge" id="userBadge" title="Sair" onclick="doLogout()"></div>
+  </div>
+</div>
+
+<div class="tabs-bar" id="tabsBar" style="display:none">
+  <div class="header-tabs" id="boardTabs"></div>
+  <div class="filters-bar">
+    <select class="filter-select" id="filterMember" onchange="applyFilters()">
+      <option value="">👤 Todos os responsáveis</option>
+    </select>
+    <select class="filter-select" id="filterPriority" onchange="applyFilters()">
+      <option value="">🏳 Todas as prioridades</option>
+      <option value="alta">🔴 Alta prioridade</option>
+      <option value="baixa">🟢 Baixa prioridade</option>
+      <option value="aguardando">🟡 Aguardando aprovação</option>
+    </select>
+    <button class="filter-clear" id="filterClearBtn" onclick="clearFilters()" style="display:none">✕ Limpar filtros</button>
+  </div>
+</div>
+
+<div class="board-wrap" id="boardWrap" style="display:none">
+  <div class="board" id="board">
+    <div class="loading"><div class="spinner"></div> Carregando...</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="cardModal" style="display:none" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-hdr-icon">📄</span>
+      <div style="flex:1;min-width:0">
+        <div id="modalCardNum" style="font-size:11px;color:rgba(255,255,255,.5);font-family:monospace;font-weight:700;margin-bottom:2px"></div>
+        <textarea class="modal-title" id="modalTitle" rows="2" placeholder="Título do card..." onblur="saveField('title',this.value)"></textarea>
+      </div>
+    </div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-body">
+      <div class="modal-main">
+        <div id="activeLabels" class="active-labels"></div>
+        <div id="activeMembers" class="members-wrap"></div>
+        <div class="modal-section">
+          <div class="sec-title">📝 Descrição</div>
+          <div class="desc-display" id="modalDescDisplay" onclick="enterDescEdit(event)"></div>
+          <textarea class="minput" id="modalDesc" rows="4" placeholder="Descrição detalhada da atividade..." style="display:none" onblur="exitDescEdit(this.value)"></textarea>
+        </div>
+        <div class="modal-section">
+          <div class="sec-title" style="justify-content:space-between"><span>✅ Checklist</span><span id="chkPct" style="font-size:11px;color:#94a3b8;font-weight:700"></span></div>
+          <div class="prog-bar"><div class="prog-fill" id="chkBar" style="width:0%"></div></div>
+          <div id="chkItems" style="margin-top:8px"></div>
+          <input class="chk-new" id="chkInput" placeholder="＋ Adicionar item... (Enter)" onkeydown="addChkItem(event)">
+        </div>
+        <div class="modal-section">
+          <div class="sec-title">💬 Comentários</div>
+          <div id="commList"></div>
+          <div class="comm-input-wrap">
+            <div class="comm-av" id="commAvSelf" style="width:30px;height:30px;border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;color:#0f1f3d;flex-shrink:0;background:#2ecc52"></div>
+            <div style="position:relative;flex:1">
+              <textarea class="minput" id="commInput" rows="2" placeholder="Escreva um comentário... use @ para marcar alguém" style="width:100%;min-height:56px" oninput="onCommentInput()" onkeydown="onCommentKeydown(event)"></textarea>
+              <div class="mention-dropdown" id="mentionDropdown"></div>
+            </div>
+            <button class="comm-send" onclick="addComment()">Enviar</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-side">
+        <div class="side-lbl">Responsáveis</div>
+        <button class="side-btn" onclick="openMbrSel()">👤 Atribuir responsável</button>
+        <div id="mbrSel" style="display:none;background:#fff;border-radius:8px;border:1.5px solid #2ecc52;padding:8px;margin-top:6px;margin-bottom:8px">
+          <input type="text" placeholder="🔍 Buscar..." id="mbrSearch" oninput="filterMbr(this.value)" style="width:100%;border:1.5px solid #e8ecf0;border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;outline:none;margin-bottom:6px;color:#172b4d">
+          <div id="mbrList" style="max-height:130px;overflow-y:auto"></div>
+        </div>
+        <div class="side-lbl">Etiquetas</div>
+        <button class="side-btn" onclick="toggleLblPanel()">🏷 Gerenciar etiquetas</button>
+        <div id="lblPanel" style="display:none;margin-top:6px">
+          <div class="lbl-grid" id="lblGrid"></div>
+          <button onclick="addLabel()" style="margin-top:6px;width:100%;background:#f0fdf4;border:1.5px dashed #2ecc52;padding:7px;border-radius:6px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:700">＋ Nova etiqueta</button>
+        </div>
+        <div class="side-lbl" style="margin-top:14px">Data de Entrega</div>
+        <input type="date" class="mdate" id="modalDue" onchange="saveField('due_date',this.value)">
+        <div class="side-lbl" style="margin-top:10px">Criado em</div>
+        <div id="modalCreatedAt" style="font-size:12px;color:#64748b;font-weight:600;padding:6px 2px"></div>
+        <div class="side-lbl" style="margin-top:10px">Prioridade</div>
+        <select class="msel" id="modalPrio" onchange="saveField('priority',this.value)">
+          <option value="">— Nenhuma —</option>
+          <option value="alta">🔴 Alta Prioridade</option>
+          <option value="baixa">🟢 Baixa Prioridade</option>
+          <option value="aguardando">🟡 Aguardando Aprovação</option>
+        </select>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e8ecf0">
+          <button class="side-btn" style="color:#dc2626;border-color:#fecaca" onclick="deleteCard()">🗑 Excluir card</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+
+
+// ═══════════════════════════════════════════
+// SUPABASE ERROR HELPER
+// ═══════════════════════════════════════════
+function checkErr(result, action) {
+  if (result && result.error) {
+    console.error(`Erro ao ${action}:`, result.error);
+    toast(`Erro ao ${action}: ` + result.error.message);
+    return false;
+  }
+  return true;
+}
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const S = {
+  supabase: null,
+  user: null,
+  profile: null,
+  boards: [],
+  currentBoard: null,
+  columns: [],
+  cards: [],
+  members: {},
+  labels: [],
+  notifications: [],
+  filters: { member: '', priority: '' },
+  collapsedColumns: new Set(loadCollapsedColumns()),
+  currentCard: null,
+  dragCardId: null,
+  placeholder: null,
+};
+
+function loadCollapsedColumns() {
+  try {
+    const raw = localStorage.getItem('collapsed_columns');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveCollapsedColumns() {
+  localStorage.setItem('collapsed_columns', JSON.stringify([...S.collapsedColumns]));
+}
+
+const DEFAULT_LABELS = [
+  {name:'Urgente',color:'#ef5c48'},
+  {name:'Alta prioridade',color:'#f79e1b'},
+  {name:'Baixa prioridade',color:'#36b37e'},
+  {name:'Aguardando aprovação',color:'#ab7df7'},
+  {name:'',color:'#4a9ef7'},
+  {name:'',color:'#ff7452'},
+];
+
+const DEFAULT_COLS = [
+  {title:'A fazer',color:'afazer',ord:0},
+  {title:'Em andamento',color:'andamento',ord:1},
+  {title:'Em revisão',color:'revisao',ord:2},
+  {title:'Aprovação/Validação',color:'aprovacao',ord:3},
+  {title:'Concluído',color:'concluido',ord:4},
+];
+
+// ═══════════════════════════════════════════
+// SUPABASE CONFIG
+// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// SUPABASE DEFAULT CREDENTIALS
+// (fixas para que novos usuários não precisem configurar)
+// ═══════════════════════════════════════════
+const DEFAULT_SUPABASE_URL = 'https://vxutdwzadyeuubbfpjmr.supabase.co';
+const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4dXRkd3phZHlldXViYmZwam1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzQ4NzUsImV4cCI6MjA5ODA1MDg3NX0.dMVuxBTf9o3s1nPMOsDayL5GM-lDxV13_teJ0c5p6n0';
+
+function loadConfig() {
+  const url = localStorage.getItem('sb_url') || DEFAULT_SUPABASE_URL;
+  const key = localStorage.getItem('sb_key') || DEFAULT_SUPABASE_KEY;
+  return url && key ? {url, key} : null;
+}
+
+window.saveSupabaseConfig = async () => {
+  const url = document.getElementById('setupUrl').value.trim();
+  const key = document.getElementById('setupKey').value.trim();
+  const err = document.getElementById('setupErr');
+  err.style.display = 'none';
+  if (!url || !key) { err.textContent = 'Preencha os dois campos.'; err.style.display=''; return; }
+  if (!url.startsWith('https://')) { err.textContent = 'URL deve começar com https://'; err.style.display=''; return; }
+  localStorage.setItem('sb_url', url);
+  localStorage.setItem('sb_key', key);
+  document.getElementById('setupOverlay').style.display = 'none';
+  await initSupabase(url, key);
+};
+
+async function initSupabase(url, key) {
+  S.supabase = supabase.createClient(url, key);
+  await setupTables();
+  checkAuth();
+}
+
+async function setupTables() {
+  // Tables are created via SQL in Supabase dashboard
+  // We'll just verify connection
+  try {
+    await S.supabase.from('columns').select('id').limit(1);
+  } catch(e) {
+    // Tables might not exist yet - that's ok, we handle gracefully
+  }
+}
+
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
+async function checkAuth() {
+  const { data: { session } } = await S.supabase.auth.getSession();
+  if (session) {
+    S.user = session.user;
+    await loadProfile();
+    showApp();
+  } else {
+    document.getElementById('authOverlay').style.display = '';
+  }
+  S.supabase.auth.onAuthStateChange(async (event, session) => {
+    if (session) {
+      S.user = session.user;
+      await loadProfile();
+      showApp();
+    } else {
+      S.user = null;
+      document.getElementById('authOverlay').style.display = '';
+      document.getElementById('mainHeader').style.display = 'none';
+      document.getElementById('boardWrap').style.display = 'none';
+    }
+  });
+}
+
+window.toggleAuth = () => {
+  const lf = document.getElementById('loginForm');
+  const rf = document.getElementById('regForm');
+  lf.style.display = lf.style.display === 'none' ? '' : 'none';
+  rf.style.display = rf.style.display === 'none' ? '' : 'none';
+  document.getElementById('authErr').style.display = 'none';
+};
+
+window.doLogin = async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pwd = document.getElementById('loginPwd').value;
+  const err = document.getElementById('authErr');
+  err.style.display = 'none';
+  if (!email || !pwd) { err.textContent = 'Preencha e-mail e senha.'; err.style.display=''; return; }
+  const { error } = await S.supabase.auth.signInWithPassword({ email, password: pwd });
+  if (error) { err.textContent = 'E-mail ou senha incorretos.'; err.style.display=''; }
+};
+
+const ALLOWED_EMAIL_DOMAIN = '@sankhya.com.br';
+
+window.doRegister = async () => {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pwd = document.getElementById('regPwd').value;
+  const err = document.getElementById('authErr');
+  err.style.display = 'none';
+  if (!name || !email || !pwd) { err.textContent = 'Preencha todos os campos.'; err.style.display=''; return; }
+  if (!email.toLowerCase().endsWith(ALLOWED_EMAIL_DOMAIN)) {
+    err.textContent = `Cadastro permitido apenas para e-mails ${ALLOWED_EMAIL_DOMAIN}`;
+    err.style.display = '';
+    return;
+  }
+  const { data, error } = await S.supabase.auth.signUp({ email, password: pwd, options: { data: { name } } });
+  if (error) {
+    // The database also enforces the domain restriction as a security
+    // backstop (in case this client-side check is ever bypassed). If that
+    // raw database error surfaces here, show the same friendly message.
+    if (/dominio|domain|sankhya\.com\.br/i.test(error.message)) {
+      err.textContent = `Cadastro permitido apenas para e-mails ${ALLOWED_EMAIL_DOMAIN}`;
+    } else {
+      err.textContent = error.message;
+    }
+    err.style.display = '';
+    return;
+  }
+  // Save profile
+  const color = ['#3e8ef7','#36b37e','#f79e1b','#ab7df7','#ef5c48','#00b8d9'][Math.floor(Math.random()*6)];
+  const pr = await S.supabase.from('profiles').upsert({ id: data.user.id, name, email, color });
+  if (!checkErr(pr, 'salvar perfil')) return;
+  toast('Conta criada! Verifique seu e-mail se necessário.');
+};
+
+window.doLogout = async () => {
+  if (confirm('Sair do planner?')) await S.supabase.auth.signOut();
+};
+
+async function loadProfile() {
+  const { data } = await S.supabase.from('profiles').select('*').eq('id', S.user.id).single();
+  S.profile = data || { name: S.user.email.split('@')[0], color: '#3e8ef7' };
+  if (!data) {
+    const r = await S.supabase.from('profiles').upsert({
+      id: S.user.id,
+      name: S.user.user_metadata?.name || S.user.email.split('@')[0],
+      email: S.user.email,
+      color: '#3e8ef7'
+    });
+    checkErr(r, 'criar perfil');
+    S.profile = { name: S.user.user_metadata?.name || S.user.email.split('@')[0], color: '#3e8ef7' };
+  }
+}
+
+// ═══════════════════════════════════════════
+// SHOW APP
+// ═══════════════════════════════════════════
+async function showApp() {
+  document.getElementById('authOverlay').style.display = 'none';
+  document.getElementById('mainHeader').style.display = '';
+  document.getElementById('tabsBar').style.display = '';
+  document.getElementById('boardWrap').style.display = '';
+  const name = S.profile?.name || S.user.email;
+  document.getElementById('userName').textContent = name;
+  document.getElementById('userBadge').textContent = initials(name);
+  document.getElementById('commAvSelf').textContent = initials(name);
+  document.getElementById('commAvSelf').style.background = S.profile?.color || '#3e8ef7';
+  await loadBoardsList();
+  await loadNotifications();
+  subscribeRealtime();
+
+  // Periodic client-side check for newly overdue cards, since there is no
+  // server-side scheduled job. Only checks the currently open board.
+  if (!S._overdueInterval) {
+    S._overdueInterval = setInterval(() => checkOverdueCards(), 5 * 60 * 1000);
+  }
+}
+
+// ═══════════════════════════════════════════
+// BOARDS (ABAS)
+// ═══════════════════════════════════════════
+async function loadBoardsList() {
+  const { data: profiles, error: profErr } = await S.supabase.from('profiles').select('*');
+  if (profErr) console.error('Erro ao carregar lista de membros:', profErr);
+  S.members = {};
+  (profiles||[]).forEach(p => S.members[p.id] = p);
+  populateFilterOptions();
+
+  const { data: boards, error } = await S.supabase.from('boards').select('*').order('ord');
+  if (error) {
+    console.error('Erro ao carregar abas:', error);
+    toast('Erro ao carregar abas: ' + error.message);
+    return;
+  }
+
+  if (!boards || !boards.length) {
+    const { data: newBoard, error: insErr } = await S.supabase.from('boards')
+      .insert({ title: 'Produção de conteúdo', ord: 0, created_by: S.user.id })
+      .select().single();
+    if (insErr) { toast('Erro ao criar aba padrão: ' + insErr.message); return; }
+    S.boards = [newBoard];
+  } else {
+    S.boards = boards;
+  }
+
+  const savedBoardId = localStorage.getItem('current_board_id');
+  const validSaved = S.boards.find(b => b.id === savedBoardId);
+  S.currentBoard = validSaved ? validSaved.id : S.boards[0].id;
+
+  renderTabs();
+  await loadBoardData(S.currentBoard);
+}
+
+function renderTabs() {
+  const wrap = document.getElementById('boardTabs');
+  if (!wrap) return;
+  wrap.innerHTML = S.boards.map(b => {
+    const isActive = b.id === S.currentBoard;
+    const editableAttr = isActive
+      ? `contenteditable="true" onblur="saveBoardTitle('${b.id}', this.textContent.trim())" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"`
+      : '';
+    return `
+    <div class="board-tab ${isActive ? 'active' : ''}" onmousedown="switchBoard('${b.id}')">
+      <span class="tab-title" ${editableAttr}>${esc(b.title)}</span>
+      ${S.boards.length > 1 ? `<span class="tab-close" onmousedown="event.stopPropagation();deleteBoardPrompt('${b.id}')">✕</span>` : ''}
+    </div>`;
+  }).join('') + `<button class="board-tab-add" onclick="addBoard()">＋</button>`;
+}
+
+window.switchBoard = async (boardId) => {
+  console.log('[switchBoard] CLICKED at', performance.now().toFixed(0)+'ms', boardId);
+  if (boardId === S.currentBoard) return;
+
+  // Request-token pattern: each call gets a unique token. Only the LATEST
+  // call is allowed to update the UI when it finishes — older in-flight
+  // calls become no-ops instead of blocking new clicks. This lets the user
+  // click rapidly between tabs without anything getting stuck.
+  const myToken = Symbol('switch');
+  S._latestSwitchToken = myToken;
+
+  S.currentBoard = boardId;
+  localStorage.setItem('current_board_id', boardId);
+  renderTabs();
+  document.getElementById('board').innerHTML = '<div class="loading"><div class="spinner"></div> Carregando...</div>';
+
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Tempo limite excedido (8s). Verifique sua conexão.')), 8000)
+  );
+
+  try {
+    await Promise.race([loadBoardData(boardId), timeoutPromise]);
+  } catch (err) {
+    console.error('[switchBoard] error', err);
+    // Only show the error if this is still the most recent click —
+    // an older failed attempt shouldn't override a newer successful one.
+    if (S._latestSwitchToken === myToken) {
+      toast('Erro ao trocar de aba: ' + err.message);
+      document.getElementById('board').innerHTML = '<div class="loading">Falha ao carregar. Clique na aba novamente para tentar de novo.</div>';
+    }
+  }
+};
+
+window.saveBoardTitle = async (boardId, title) => {
+  if (!title) { renderTabs(); return; }
+  const r = await S.supabase.from('boards').update({ title }).eq('id', boardId);
+  if (!checkErr(r, 'renomear aba')) { renderTabs(); return; }
+  const b = S.boards.find(x => x.id === boardId);
+  if (b) b.title = title;
+};
+
+window.addBoard = async () => {
+  const title = prompt('Nome da nova aba:');
+  if (!title || !title.trim()) return;
+  const ord = S.boards.length;
+  const { data, error } = await S.supabase.from('boards')
+    .insert({ title: title.trim(), ord, created_by: S.user.id })
+    .select().single();
+  if (error) { toast('Erro ao criar aba: ' + error.message); return; }
+  S.boards.push(data);
+  await switchBoard(data.id);
+  toast('Aba criada!');
+};
+
+window.deleteBoardPrompt = async (boardId) => {
+  const board = S.boards.find(b => b.id === boardId);
+  if (!board) return;
+  if (!confirm(`Excluir a aba "${board.title}" e todo o seu conteúdo (colunas, cards, etiquetas)? Esta ação não pode ser desfeita.`)) return;
+  const r1 = await S.supabase.from('cards').delete().eq('board_id', boardId);
+  if (!checkErr(r1, 'excluir cards da aba')) return;
+  const r2 = await S.supabase.from('columns').delete().eq('board_id', boardId);
+  if (!checkErr(r2, 'excluir colunas da aba')) return;
+  const r3 = await S.supabase.from('labels').delete().eq('board_id', boardId);
+  if (!checkErr(r3, 'excluir etiquetas da aba')) return;
+  const r4 = await S.supabase.from('boards').delete().eq('id', boardId);
+  if (!checkErr(r4, 'excluir aba')) return;
+  S.boards = S.boards.filter(b => b.id !== boardId);
+  if (S.currentBoard === boardId) {
+    S.currentBoard = S.boards[0]?.id || null;
+    localStorage.setItem('current_board_id', S.currentBoard || '');
+  }
+  renderTabs();
+  if (S.currentBoard) await loadBoardData(S.currentBoard);
+  toast('Aba excluída.');
+};
+
+// ═══════════════════════════════════════════
+// BOARD DATA (per aba)
+// ═══════════════════════════════════════════
+async function loadBoardData(boardId) {
+  console.log('[loadBoardData] start', boardId);
+  const t0 = performance.now();
+
+  // Load labels, columns and cards in parallel (faster than sequential)
+  const [lblRes, colRes, cardRes] = await Promise.all([
+    S.supabase.from('labels').select('*').eq('board_id', boardId).order('ord'),
+    S.supabase.from('columns').select('*').eq('board_id', boardId).order('ord'),
+    S.supabase.from('cards').select('*').eq('board_id', boardId).order('ord'),
+  ]);
+  console.log('[loadBoardData] initial fetch done', (performance.now()-t0).toFixed(0)+'ms');
+
+  if (lblRes.error) { toast('Erro ao carregar etiquetas: ' + lblRes.error.message); return; }
+  if (colRes.error) { toast('Erro ao carregar colunas: ' + colRes.error.message); return; }
+  if (cardRes.error) { toast('Erro ao carregar cards: ' + cardRes.error.message); return; }
+
+  // Labels — create defaults in parallel if none exist yet
+  if (lblRes.data && lblRes.data.length) {
+    S.labels = lblRes.data;
+  } else {
+    const inserts = DEFAULT_LABELS.map((l, i) => {
+      const labelId = 'lbl' + Date.now() + '_' + i + '_' + Math.random().toString(36).slice(2,7);
+      return S.supabase.from('labels')
+        .insert({ id: labelId, name: l.name, color: l.color, ord: i, board_id: boardId })
+        .select().single();
+    });
+    const results = await Promise.all(inserts);
+    S.labels = [];
+    for (const r of results) {
+      if (r.error) { toast('Erro ao criar etiqueta padrão: ' + r.error.message); continue; }
+      S.labels.push(r.data);
+    }
+    console.log('[loadBoardData] default labels created', (performance.now()-t0).toFixed(0)+'ms');
+  }
+
+  // Columns — create defaults in parallel if none exist yet
+  if (colRes.data && colRes.data.length) {
+    S.columns = colRes.data;
+  } else {
+    const inserts = DEFAULT_COLS.map(c =>
+      S.supabase.from('columns')
+        .insert({ title: c.title, color: c.color, ord: c.ord, board_id: boardId })
+        .select().single()
+    );
+    const results = await Promise.all(inserts);
+    S.columns = [];
+    for (const r of results) {
+      if (r.error) { toast('Erro ao criar coluna padrão: ' + r.error.message); continue; }
+      S.columns.push(r.data);
+    }
+    S.columns.sort((a,b) => (a.ord||0)-(b.ord||0));
+    console.log('[loadBoardData] default columns created', (performance.now()-t0).toFixed(0)+'ms');
+  }
+
+  // Cards
+  S.cards = cardRes.data || [];
+
+  // Guard against stale/out-of-order responses: only paint the UI if the
+  // user hasn't already switched to a different board while this was loading.
+  if (boardId !== S.currentBoard) {
+    console.log('[loadBoardData] stale response discarded for', boardId);
+    return;
+  }
+
+  renderBoard();
+  console.log('[loadBoardData] done', (performance.now()-t0).toFixed(0)+'ms');
+  checkOverdueCards();
+}
+
+function subscribeRealtime() {
+  // Prevent creating a duplicate subscription (causes uncaught errors that
+  // can leave switchBoard's lock stuck on true)
+  if (S._realtimeSubscribed) {
+    console.log('[subscribeRealtime] already subscribed, skipping');
+    return;
+  }
+  S._realtimeSubscribed = true;
+
+  try {
+    // Debounce realtime updates to avoid fighting with optimistic UI
+    let reloadTimer = null;
+    let notifTimer = null;
+    S.supabase.channel('planner')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'columns' }, () => {
+        clearTimeout(reloadTimer);
+        reloadTimer = setTimeout(() => loadBoardData(S.currentBoard), 800);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'cards' }, () => {
+        // Only reload if we're not currently dragging
+        if (!S.dragCardId) {
+          clearTimeout(reloadTimer);
+          reloadTimer = setTimeout(() => loadBoardData(S.currentBoard), 800);
+        }
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        clearTimeout(reloadTimer);
+        reloadTimer = setTimeout(() => loadBoardData(S.currentBoard), 800);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
+        clearTimeout(notifTimer);
+        notifTimer = setTimeout(() => loadNotifications(), 500);
+      })
+      .subscribe();
+  } catch (err) {
+    console.error('[subscribeRealtime] failed to subscribe', err);
+  }
+}
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  for (const col of S.columns) {
+    const colCards = S.cards.filter(c => c.column_id === col.id).sort((a,b) => (a.ord||0)-(b.ord||0));
+    const el = document.createElement('div');
+    el.className = 'column';
+    el.dataset.colId = col.id;
+    el.innerHTML = `
+      <div class="col-header">
+        <div class="col-title-wrap">
+          <div class="col-dot dot-${col.color||'custom'}"></div>
+          <input class="col-title" value="${esc(col.title)}" onblur="saveColTitle('${col.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+          <span class="col-count">${colCards.length}</span>
+        </div>
+        <button class="col-menu" onclick="openColMenu(event,'${col.id}')">⋯</button>
+      </div>
+      <div class="col-cards" id="cards-${col.id}"
+        ondragover="onDragOver(event,'${col.id}')"
+        ondrop="onDrop(event,'${col.id}')"
+        ondragleave="onDragLeave(event)">
+        ${colCards.map(c => cardHtml(c)).join('')}
+      </div>
+      <div class="col-footer">
+        <button class="add-card-btn" onclick="showAddForm('${col.id}')">＋ Adicionar card</button>
+      </div>`;
+    board.appendChild(el);
+  }
+  const addBtn = document.createElement('button');
+  addBtn.className = 'add-col-btn';
+  addBtn.innerHTML = '＋ Adicionar coluna';
+  addBtn.onclick = addColumn;
+  board.appendChild(addBtn);
+}
+
+function cardHtml(card) {
+  const labels = (card.labels||[]).map(lid => {
+    const l = S.labels.find(x=>x.id===lid);
+    return l ? `<div class="card-label" style="background:${l.color}" title="${l.name||''}">${esc(l.name||'Etiqueta')}</div>` : '';
+  }).join('');
+  const members = (card.members||[]).map(uid => {
+    const m = S.members[uid];
+    return m ? `<div class="card-avatar" style="background:${m.color||'#3e8ef7'}">${initials(m.name)}</div>` : '';
+  }).join('');
+  const checks = card.checklist||[];
+  const done = checks.filter(c=>c.done).length;
+  const chkHtml = checks.length ? `<div class="prog-bar"><div class="prog-fill" style="width:${Math.round(done/checks.length*100)}%"></div></div><div class="prog-text">${done}/${checks.length}</div>` : '';
+  const dueHtml = card.due_date ? (()=>{
+    const today = localDateString();
+    const cls = card.due_date < today ? 'due-over' : card.due_date === today ? 'due-today' : 'due-ok';
+    return `<span class="card-due ${cls}">📅 ${fmtDate(card.due_date)}</span>`;
+  })() : '';
+  const prioHtml = card.priority ? `<span class="prio-badge prio-${card.priority}">${prioLbl(card.priority)}</span>` : '';
+  const commCount = (card.comments||[]).length;
+  const createdHtml = card.created_at ? `<span class="card-badge" title="Criado em">🗓️ ${fmtDate(card.created_at.split('T')[0])}</span>` : '';
+  const cardNumHtml = card.card_number ? `<span class="card-num">#${card.card_number}</span>` : '';
+  return `<div class="card" id="card-${card.id}" draggable="true"
+    ondragstart="onDragStart(event,'${card.id}')"
+    ondragend="onDragEnd(event)"
+    onclick="openCard('${card.id}')">
+    ${labels ? `<div class="card-labels">${labels}</div>` : ''}
+    ${cardNumHtml}
+    <div class="card-title">${esc(card.title||'Sem título')}</div>
+    ${prioHtml}
+    ${chkHtml}
+    <div class="card-meta">
+      <div class="card-badges">
+        ${createdHtml}
+        ${commCount ? `<span class="card-badge">💬 ${commCount}</span>` : ''}
+        ${dueHtml}
+      </div>
+      ${members ? `<div class="card-avatars">${members}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// DRAG & DROP — optimistic UI
+// ═══════════════════════════════════════════
+window.onDragStart = (e, id) => {
+  S.dragCardId = id;
+  S.dragStartCol = S.cards.find(c=>c.id===id)?.column_id;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+  // Small delay so the element doesn't vanish before ghost image forms
+  requestAnimationFrame(() => {
+    const el = document.getElementById(`card-${id}`);
+    if (el) el.classList.add('dragging');
+  });
+};
+
+window.onDragEnd = () => {
+  const el = document.getElementById(`card-${S.dragCardId}`);
+  if (el) el.classList.remove('dragging');
+  if (S.placeholder) { S.placeholder.remove(); S.placeholder = null; }
+  S.dragCardId = null;
+};
+
+window.onDragOver = (e, colId) => {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const container = document.getElementById(`cards-${colId}`);
+  if (!S.placeholder) {
+    S.placeholder = document.createElement('div');
+    S.placeholder.className = 'drag-ph';
+  }
+  const after = getAfterEl(container, e.clientY);
+  if (after) container.insertBefore(S.placeholder, after);
+  else container.appendChild(S.placeholder);
+};
+
+window.onDragLeave = (e) => {
+  // Only remove placeholder if leaving the column entirely
+  const related = e.relatedTarget;
+  if (!related || !e.currentTarget.contains(related)) {
+    if (S.placeholder && S.placeholder.parentNode === e.currentTarget) {
+      S.placeholder.remove();
+      S.placeholder = null;
+    }
+  }
+};
+
+window.onDrop = (e, colId) => {
+  e.preventDefault();
+  if (!S.dragCardId) return;
+  if (S.placeholder) { S.placeholder.remove(); S.placeholder = null; }
+
+  const cardId = S.dragCardId;
+  const container = document.getElementById(`cards-${colId}`);
+  const visibleCards = [...container.querySelectorAll('.card:not(.dragging)')];
+  const after = getAfterEl(container, e.clientY);
+  const newOrd = after ? visibleCards.indexOf(after) : visibleCards.length;
+
+  // ── OPTIMISTIC UPDATE: move card in local state immediately ──
+  const cardIdx = S.cards.findIndex(c => c.id === cardId);
+  if (cardIdx === -1) return;
+
+  // Update column and order in local state
+  S.cards[cardIdx].column_id = colId;
+
+  // Recompute orders for affected column
+  const colCards = S.cards
+    .filter(c => c.column_id === colId && c.id !== cardId)
+    .sort((a,b) => (a.ord||0)-(b.ord||0));
+  colCards.splice(newOrd, 0, S.cards[cardIdx]);
+  colCards.forEach((c,i) => { c.ord = i; });
+
+  // Re-render board immediately (no await)
+  renderBoard();
+
+  // ── BACKGROUND SYNC to Supabase ──
+  (async () => {
+    try {
+      const mainUpdate = await S.supabase.from('cards').update({ column_id: colId, ord: newOrd, overdue_notified: false }).eq('id', cardId);
+      if (mainUpdate.error) throw mainUpdate.error;
+      // Silently reorder all cards in column
+      const updates = colCards.map((c,i) =>
+        S.supabase.from('cards').update({ ord: i }).eq('id', c.id)
+      );
+      const results = await Promise.all(updates);
+      const failed = results.find(r => r.error);
+      if (failed) throw failed.error;
+    } catch(err) {
+      console.error('Sync error:', err);
+      toast('Erro ao salvar a movimentação do card: ' + (err.message || 'erro desconhecido'));
+      // On error, reload from server to restore correct state
+      await loadBoardData(S.currentBoard);
+    }
+  })();
+};
+
+function getAfterEl(container, y) {
+  const els = [...container.querySelectorAll('.card:not(.dragging)')];
+  return els.reduce((closest, el) => {
+    const box = el.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > (closest.offset || -Infinity)) return { offset, element: el };
+    return closest;
+  }, {}).element;
+}
+
+// ═══════════════════════════════════════════
+// CARDS
+// ═══════════════════════════════════════════
+window.showAddForm = (colId) => {
+  const container = document.getElementById(`cards-${colId}`);
+  if (container.querySelector('.card-form')) { container.querySelector('textarea').focus(); return; }
+  const form = document.createElement('div');
+  form.className = 'card-form';
+  form.innerHTML = `<textarea placeholder="Título do card..."></textarea>
+    <div class="card-form-btns">
+      <button class="btn-sm btn-ok" onclick="createCard('${colId}',this.closest('.card-form').querySelector('textarea').value)">Adicionar</button>
+      <button class="btn-sm btn-cancel" onclick="this.closest('.card-form').remove()">✕</button>
+    </div>`;
+  container.appendChild(form);
+  const ta = form.querySelector('textarea');
+  ta.focus();
+  ta.addEventListener('keydown', e => {
+    if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); createCard(colId, ta.value); }
+    if (e.key==='Escape') form.remove();
+  });
+};
+
+window.createCard = async (colId, title) => {
+  title = (title||'').trim();
+  if (!title) return;
+  const ord = S.cards.filter(c=>c.column_id===colId).length;
+  const { data, error } = await S.supabase.from('cards').insert({
+    title, column_id: colId, ord, created_by: S.user.id,
+    created_at: new Date().toISOString(),
+    board_id: S.currentBoard,
+    labels: [], members: [], checklist: [], comments: []
+  }).select();
+  if (error) {
+    console.error('Erro ao criar card:', error);
+    toast('Erro ao criar card: ' + error.message);
+    return;
+  }
+  await loadBoardData(S.currentBoard);
+  toast('Card criado!');
+};
+
+window.openNewCardGlobal = () => { if (S.columns.length) showAddForm(S.columns[0].id); };
+
+window.openCard = (id) => {
+  const card = S.cards.find(c=>c.id===id);
+  if (!card) return;
+  S.currentCard = id;
+  document.getElementById('modalCardNum').textContent = card.card_number ? `#${card.card_number}` : '';
+  document.getElementById('modalTitle').value = card.title||'';
+  document.getElementById('modalDesc').value = card.description||'';
+  document.getElementById('modalDescDisplay').innerHTML = card.description ? linkify(card.description) : '';
+  document.getElementById('modalDescDisplay').style.display = '';
+  document.getElementById('modalDesc').style.display = 'none';
+  document.getElementById('modalDue').value = card.due_date||'';
+  document.getElementById('modalPrio').value = card.priority||'';
+  document.getElementById('modalCreatedAt').textContent = card.created_at ? fmtDateTime(card.created_at) : '—';
+  renderActiveLabels(card);
+  renderActiveMembers(card);
+  renderChecklist(card);
+  renderComments(card);
+  document.getElementById('cardModal').style.display = '';
+};
+
+window.enterDescEdit = (event) => {
+  if (event && event.target && event.target.tagName === 'A') return;
+  const display = document.getElementById('modalDescDisplay');
+  const textarea = document.getElementById('modalDesc');
+  display.style.display = 'none';
+  textarea.style.display = '';
+  textarea.focus();
+};
+
+window.exitDescEdit = async (value) => {
+  const display = document.getElementById('modalDescDisplay');
+  const textarea = document.getElementById('modalDesc');
+  display.innerHTML = value ? linkify(value) : '';
+  display.style.display = '';
+  textarea.style.display = 'none';
+  await saveField('description', value);
+};
+
+window.closeModal = () => {
+  document.getElementById('cardModal').style.display = 'none';
+  document.getElementById('mbrSel').style.display = 'none';
+  document.getElementById('lblPanel').style.display = 'none';
+  S.currentCard = null;
+};
+window.closeModalBg = (e) => { if (e.target.id==='cardModal') closeModal(); };
+
+window.saveField = async (field, value) => {
+  if (!S.currentCard) return;
+  const payload = { [field]: value };
+  if (field === 'due_date') payload.overdue_notified = false;
+  const r = await S.supabase.from('cards').update(payload).eq('id', S.currentCard);
+  if (!checkErr(r, 'salvar alteração')) return;
+  await loadBoardData(S.currentBoard);
+};
+
+window.deleteCard = async () => {
+  if (!S.currentCard || !confirm('Excluir este card?')) return;
+  const r = await S.supabase.from('cards').delete().eq('id', S.currentCard);
+  if (!checkErr(r, 'excluir card')) return;
+  closeModal();
+  await loadBoardData(S.currentBoard);
+  toast('Card excluído.');
+};
+
+// ═══════════════════════════════════════════
+// LABELS
+// ═══════════════════════════════════════════
+function renderActiveLabels(card) {
+  document.getElementById('activeLabels').innerHTML = (card.labels||[]).map(lid => {
+    const l = S.labels.find(x=>x.id===lid);
+    return l ? `<span class="act-lbl" style="background:${l.color}" onclick="toggleLabel('${lid}')">${l.name||'Etiqueta'}</span>` : '';
+  }).join('');
+}
+
+window.toggleLblPanel = () => {
+  const p = document.getElementById('lblPanel');
+  if (p.style.display==='none') { renderLblGrid(); p.style.display=''; }
+  else p.style.display='none';
+};
+
+function renderLblGrid() {
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  const active = card?.labels||[];
+  document.getElementById('lblGrid').innerHTML = S.labels.map(l => `
+    <div class="lbl-row ${active.includes(l.id)?'lbl-active':''}" onclick="toggleLabel('${l.id}')">
+      <div class="lbl-flag" style="background:${l.color}">
+        <input class="lbl-name" value="${l.name||''}" placeholder="Nome da etiqueta" onclick="event.stopPropagation()" onblur="saveLblName('${l.id}',this.value)">
+      </div>
+      <input type="checkbox" class="lbl-chk" ${active.includes(l.id)?'checked':''} onclick="event.stopPropagation()" onchange="toggleLabel('${l.id}')">
+    </div>`).join('');
+}
+
+window.toggleLabel = async (lblId) => {
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  if (!card) return;
+  let labels = [...(card.labels||[])];
+  if (labels.includes(lblId)) labels = labels.filter(l=>l!==lblId);
+  else labels.push(lblId);
+  const r = await S.supabase.from('cards').update({labels}).eq('id', S.currentCard);
+  if (!checkErr(r, 'atualizar etiquetas')) return;
+  await loadBoardData(S.currentBoard);
+  const updated = S.cards.find(c=>c.id===S.currentCard);
+  if (updated) { renderActiveLabels(updated); renderLblGrid(); }
+};
+
+window.saveLblName = async (id, name) => {
+  const r = await S.supabase.from('labels').update({name}).eq('id', id);
+  if (!checkErr(r, 'renomear etiqueta')) return;
+  const l = S.labels.find(x=>x.id===id);
+  if (l) l.name = name;
+};
+
+window.addLabel = async () => {
+  const colors = ['#3e8ef7','#36b37e','#f79e1b','#ab7df7','#ef5c48','#00b8d9'];
+  const newL = { id: 'lbl'+Date.now(), name:'', color: colors[S.labels.length%colors.length], ord: S.labels.length, board_id: S.currentBoard };
+  const r = await S.supabase.from('labels').insert(newL);
+  if (!checkErr(r, 'criar etiqueta')) return;
+  S.labels.push(newL);
+  renderLblGrid();
+};
+
+// ═══════════════════════════════════════════
+// MEMBERS
+// ═══════════════════════════════════════════
+function renderActiveMembers(card) {
+  document.getElementById('activeMembers').innerHTML = (card.members||[]).map(uid => {
+    const m = S.members[uid];
+    return m ? `<div class="member-chip" onclick="toggleMember('${uid}')"><div class="chip-av" style="background:${m.color||'#3e8ef7'}">${initials(m.name)}</div>${m.name}</div>` : '';
+  }).join('');
+}
+
+window.openMbrSel = () => {
+  const sel = document.getElementById('mbrSel');
+  if (sel.style.display !== 'none') { sel.style.display='none'; return; }
+  renderMbrList('');
+  sel.style.display = '';
+  setTimeout(() => document.getElementById('mbrSearch')?.focus(), 50);
+};
+
+window.filterMbr = (q) => renderMbrList(q);
+
+function renderMbrList(q) {
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  const active = card?.members||[];
+  document.getElementById('mbrList').innerHTML = Object.entries(S.members)
+    .filter(([,m]) => m.name.toLowerCase().includes(q.toLowerCase()))
+    .map(([uid,m]) => `<div class="mbr-opt" onclick="toggleMember('${uid}')">
+      <div style="background:${m.color||'#3e8ef7'};width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">${initials(m.name)}</div>
+      <span style="flex:1">${m.name}</span>
+      ${active.includes(uid)?'<span class="mbr-check">✓</span>':''}
+    </div>`).join('');
+}
+
+window.toggleMember = async (uid) => {
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  if (!card) return;
+  let members = [...(card.members||[])];
+  if (members.includes(uid)) members = members.filter(m=>m!==uid);
+  else members.push(uid);
+  const r = await S.supabase.from('cards').update({members}).eq('id', S.currentCard);
+  if (!checkErr(r, 'atualizar responsáveis')) return;
+  await loadBoardData(S.currentBoard);
+  const updated = S.cards.find(c=>c.id===S.currentCard);
+  if (updated) { renderActiveMembers(updated); renderMbrList(document.getElementById('mbrSearch')?.value||''); }
+};
+
+// ═══════════════════════════════════════════
+// CHECKLIST
+// ═══════════════════════════════════════════
+function renderChecklist(card) {
+  const items = card.checklist||[];
+  const done = items.filter(c=>c.done).length;
+  const pct = items.length ? Math.round(done/items.length*100) : 0;
+  document.getElementById('chkPct').textContent = items.length ? `${done}/${items.length}` : '';
+  document.getElementById('chkBar').style.width = pct+'%';
+  document.getElementById('chkItems').innerHTML = items.map((item,i) => `
+    <div class="chk-item">
+      <input type="checkbox" ${item.done?'checked':''} onchange="toggleChk(${i},this.checked)">
+      <span class="chk-text ${item.done?'done':''}" onclick="this.previousElementSibling.click()">${esc(item.text)}</span>
+      <button class="chk-del" onclick="removeChk(${i})">✕</button>
+    </div>`).join('');
+}
+
+window.addChkItem = async (e) => {
+  if (e.key!=='Enter') return;
+  const input = document.getElementById('chkInput');
+  const text = input.value.trim();
+  if (!text||!S.currentCard) return;
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  const checklist = [...(card.checklist||[]), {text, done:false}];
+  const r = await S.supabase.from('cards').update({checklist}).eq('id', S.currentCard);
+  if (!checkErr(r, 'adicionar item do checklist')) return;
+  input.value = '';
+  await loadBoardData(S.currentBoard);
+  renderChecklist(S.cards.find(c=>c.id===S.currentCard));
+};
+
+window.toggleChk = async (idx, done) => {
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  const checklist = (card.checklist||[]).map((item,i) => i===idx ? {...item,done} : item);
+  const r = await S.supabase.from('cards').update({checklist}).eq('id', S.currentCard);
+  if (!checkErr(r, 'atualizar checklist')) return;
+  await loadBoardData(S.currentBoard);
+  renderChecklist(S.cards.find(c=>c.id===S.currentCard));
+};
+
+window.removeChk = async (idx) => {
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  const checklist = (card.checklist||[]).filter((_,i)=>i!==idx);
+  const r = await S.supabase.from('cards').update({checklist}).eq('id', S.currentCard);
+  if (!checkErr(r, 'remover item do checklist')) return;
+  await loadBoardData(S.currentBoard);
+  renderChecklist(S.cards.find(c=>c.id===S.currentCard));
+};
+
+// ═══════════════════════════════════════════
+// COMMENTS
+// ═══════════════════════════════════════════
+function formatCommentText(text) {
+  // Escape first (XSS safety), then apply mention highlighting, then linkify.
+  // mentionify runs on the escaped text using the same @[Name] marker inserted
+  // by the mention dropdown; linkify's own escaping is skipped by using its
+  // internal regex directly on already-escaped text via a raw variant.
+  return linkifyRaw(mentionify(esc(text)));
+}
+
+function mentionify(escapedText) {
+  // Matches the literal marker inserted by the mention dropdown: @[Full Name]
+  return escapedText.replace(/@\[([^\]]+)\]/g, (match, name) => {
+    return `<span class="mention-badge">@${name}</span>`;
+  });
+}
+
+function linkifyRaw(escapedText) {
+  // Same URL regex as linkify(), but operates on already-escaped text
+  // (used when combining with mentionify to avoid double-escaping).
+  const urlRegex = /(\bhttps?:\/\/[^\s<]+[^\s<.,;:!?)'"]|(?<![@\w])www\.[^\s<]+[^\s<.,;:!?)'"])/gi;
+  return escapedText.replace(urlRegex, (match) => {
+    const href = match.startsWith('www.') ? 'https://' + match : match;
+    return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="content-link">${match}</a>`;
+  });
+}
+
+function extractMentionedUids(rawText) {
+  // Finds @[Full Name] markers in the raw (unescaped) comment text and
+  // resolves them to member UIDs by matching the name against S.members.
+  const uids = new Set();
+  const regex = /@\[([^\]]+)\]/g;
+  let match;
+  while ((match = regex.exec(rawText)) !== null) {
+    const name = match[1];
+    const found = Object.entries(S.members).find(([, m]) => m.name === name);
+    if (found) uids.add(found[0]);
+  }
+  return [...uids];
+}
+
+function renderComments(card) {
+  const comments = (card.comments||[]).sort((a,b)=>(a.ts||0)-(b.ts||0));
+  document.getElementById('commList').innerHTML = comments.map(c => {
+    const m = S.members[c.uid] || {name: c.name||'Usuário', color:'#3e8ef7'};
+    return `<div class="comment">
+      <div class="comm-av" style="background:${m.color||'#3e8ef7'}">${initials(m.name||c.name||'U')}</div>
+      <div class="comm-body">
+        <span class="comm-author">${m.name||c.name}</span>
+        <span class="comm-time">${timeAgo(c.ts)}</span>
+        <div class="comm-text">${formatCommentText(c.text)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.addComment = async () => {
+  const input = document.getElementById('commInput');
+  const text = input.value.trim();
+  if (!text||!S.currentCard) return;
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  if (!card) return;
+  const authorName = S.profile?.name||S.user.email;
+  const comments = [...(card.comments||[]), {
+    text, uid: S.user.id, name: authorName, ts: Date.now()
+  }];
+  const r = await S.supabase.from('cards').update({comments}).eq('id', S.currentCard);
+  if (!checkErr(r, 'adicionar comentário')) return;
+
+  // Create notifications for mentioned users (excluding the author themself)
+  const mentionedUids = extractMentionedUids(text).filter(uid => uid !== S.user.id);
+  if (mentionedUids.length) {
+    const snippet = text.length > 120 ? text.slice(0, 120) + '…' : text;
+    const rows = mentionedUids.map(uid => ({
+      user_id: uid,
+      card_id: card.id,
+      board_id: S.currentBoard,
+      card_number: card.card_number || null,
+      card_title: card.title || '',
+      comment_snippet: snippet,
+      mentioned_by_name: authorName,
+      type: 'mention',
+    }));
+    const nr = await S.supabase.from('notifications').insert(rows);
+    if (nr.error) console.error('Erro ao criar notificações de menção:', nr.error);
+  }
+
+  input.value = '';
+  closeMentionDropdown();
+  await loadBoardData(S.currentBoard);
+  renderComments(S.cards.find(c=>c.id===S.currentCard));
+  toast('Comentário adicionado.');
+};
+
+// ═══════════════════════════════════════════
+// @ MENTIONS (autocomplete dropdown)
+// ═══════════════════════════════════════════
+S._mention = { active: false, start: -1, query: '', filtered: [], highlighted: 0 };
+
+window.onCommentInput = () => {
+  const input = document.getElementById('commInput');
+  const cursor = input.selectionStart;
+  const textBefore = input.value.slice(0, cursor);
+  const match = textBefore.match(/(?:^|\s)@([^\s@]*)$/);
+
+  if (!match) { closeMentionDropdown(); return; }
+
+  const query = match[1].toLowerCase();
+  const start = cursor - query.length - 1; // position of the "@"
+  const filtered = Object.entries(S.members)
+    .filter(([, m]) => m.name.toLowerCase().includes(query))
+    .slice(0, 8);
+
+  S._mention = { active: true, start, query, filtered, highlighted: 0 };
+  renderMentionDropdown();
+};
+
+window.onCommentKeydown = (e) => {
+  if (!S._mention.active) return;
+  const items = S._mention.filtered;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    S._mention.highlighted = Math.min(S._mention.highlighted + 1, items.length - 1);
+    renderMentionDropdown();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    S._mention.highlighted = Math.max(S._mention.highlighted - 1, 0);
+    renderMentionDropdown();
+  } else if (e.key === 'Enter' && items.length) {
+    e.preventDefault();
+    const [uid] = items[S._mention.highlighted];
+    selectMention(uid);
+  } else if (e.key === 'Escape') {
+    closeMentionDropdown();
+  }
+};
+
+function renderMentionDropdown() {
+  const dd = document.getElementById('mentionDropdown');
+  const { active, filtered, highlighted } = S._mention;
+  if (!active) { dd.classList.remove('open'); return; }
+  if (!filtered.length) {
+    dd.innerHTML = `<div class="mention-empty">Nenhum usuário encontrado</div>`;
+  } else {
+    dd.innerHTML = filtered.map(([uid, m], i) => `
+      <div class="mention-opt ${i===highlighted?'highlighted':''}" onmousedown="event.preventDefault();selectMention('${uid}')">
+        <div class="mention-opt-av" style="background:${m.color||'#3e8ef7'}">${initials(m.name)}</div>
+        <span>${esc(m.name)}</span>
+      </div>`).join('');
+  }
+  dd.classList.add('open');
+}
+
+window.selectMention = (uid) => {
+  const m = S.members[uid];
+  if (!m) return;
+  const input = document.getElementById('commInput');
+  const { start } = S._mention;
+  const cursor = input.selectionStart;
+  const before = input.value.slice(0, start);
+  const after = input.value.slice(cursor);
+  const insertion = `@[${m.name}] `;
+  input.value = before + insertion + after;
+  const newCursor = (before + insertion).length;
+  input.focus();
+  input.setSelectionRange(newCursor, newCursor);
+  closeMentionDropdown();
+};
+
+function closeMentionDropdown() {
+  S._mention = { active: false, start: -1, query: '', filtered: [], highlighted: 0 };
+  const dd = document.getElementById('mentionDropdown');
+  if (dd) dd.classList.remove('open');
+}
+
+// ═══════════════════════════════════════════
+// COLUMNS
+// ═══════════════════════════════════════════
+window.saveColTitle = async (id, title) => {
+  const r = await S.supabase.from('columns').update({title}).eq('id', id);
+  if (!checkErr(r, 'renomear coluna')) return;
+  await loadBoardData(S.currentBoard);
+};
+
+window.addColumn = async () => {
+  const title = prompt('Nome da nova coluna:');
+  if (!title) return;
+  const r = await S.supabase.from('columns').insert({ title, color:'custom', ord: S.columns.length, board_id: S.currentBoard });
+  if (!checkErr(r, 'criar coluna')) return;
+  await loadBoardData(S.currentBoard);
+  toast('Coluna adicionada!');
+};
+
+window.openColMenu = (e, id) => {
+  e.stopPropagation();
+  closeDD();
+  const rect = e.currentTarget.getBoundingClientRect();
+  const dd = document.createElement('div');
+  dd.className = 'dropdown'; dd.id = 'activeDD';
+  dd.style.cssText = `top:${rect.bottom+4}px;left:${rect.left}px`;
+  dd.innerHTML = `
+    <div class="dd-item" onclick="sortCol('${id}','title')">⬆ Ordenar A-Z</div>
+    <div class="dd-item" onclick="sortCol('${id}','due_date')">📅 Ordenar por data</div>
+    <div class="dd-sep"></div>
+    <div class="dd-item danger" onclick="delCol('${id}')">🗑 Excluir coluna</div>`;
+  document.body.appendChild(dd);
+  document.addEventListener('click', closeDD, {once:true});
+};
+
+window.sortCol = async (colId, field) => {
+  closeDD();
+  const cards = S.cards.filter(c=>c.column_id===colId).sort((a,b)=>{
+    const va=a[field]||'', vb=b[field]||'';
+    return va<vb?-1:va>vb?1:0;
+  });
+  const results = await Promise.all(
+    cards.map((c,i) => S.supabase.from('cards').update({ord:i}).eq('id',c.id))
+  );
+  const failed = results.find(r => r.error);
+  if (failed) { toast('Erro ao ordenar coluna: ' + failed.error.message); return; }
+  await loadBoardData(S.currentBoard);
+};
+
+window.delCol = async (id) => {
+  closeDD();
+  const count = S.cards.filter(c=>c.column_id===id).length;
+  if (!confirm(`Excluir coluna e seus ${count} card(s)?`)) return;
+  const r1 = await S.supabase.from('cards').delete().eq('column_id', id);
+  if (!checkErr(r1, 'excluir cards da coluna')) return;
+  const r2 = await S.supabase.from('columns').delete().eq('id', id);
+  if (!checkErr(r2, 'excluir coluna')) return;
+  await loadBoardData(S.currentBoard);
+  toast('Coluna excluída.');
+};
+
+function closeDD() { document.getElementById('activeDD')?.remove(); }
+
+// ═══════════════════════════════════════════
+// NOTIFICATIONS (menções @ e cards vencidos)
+// ═══════════════════════════════════════════
+
+async function checkOverdueCards() {
+  // Client-side overdue detection: runs whenever board data loads and on a
+  // periodic timer while the app is open. There is no server-side cron job
+  // (would require a Supabase Edge Function), so this only fires while at
+  // least one team member has the planner open in a browser tab.
+  if (!S.currentBoard || !S.cards.length) return;
+  const todayStr = localDateString();
+
+  const overdueCards = S.cards.filter(c => {
+    if (!c.due_date || c.due_date >= todayStr) return false; // not overdue
+    if (c.overdue_notified) return false; // already notified for this deadline
+    if (!(c.members||[]).length) return false; // no one assigned to notify
+    const col = S.columns.find(col => col.id === c.column_id);
+    if (col && col.color === 'concluido') return false; // already done
+    return true;
+  });
+  if (!overdueCards.length) return;
+
+  for (const card of overdueCards) {
+    const rows = (card.members||[]).map(uid => ({
+      user_id: uid,
+      card_id: card.id,
+      board_id: S.currentBoard,
+      card_number: card.card_number || null,
+      card_title: card.title || '',
+      comment_snippet: `Prazo de entrega era ${fmtDate(card.due_date)}.`,
+      mentioned_by_name: 'Sistema',
+      type: 'overdue',
+    }));
+    const nr = await S.supabase.from('notifications').insert(rows);
+    if (nr.error) { console.error('Erro ao notificar card vencido:', nr.error); continue; }
+
+    const r = await S.supabase.from('cards').update({ overdue_notified: true }).eq('id', card.id);
+    if (r.error) console.error('Erro ao marcar card como notificado:', r.error);
+    else card.overdue_notified = true;
+  }
+
+  await loadNotifications();
+}
+
+async function loadNotifications() {
+  const { data, error } = await S.supabase.from('notifications')
+    .select('*').eq('user_id', S.user.id).order('created_at', { ascending: false }).limit(50);
+  if (error) { console.error('Erro ao carregar notificações:', error); return; }
+  S.notifications = data || [];
+  renderBell();
+  if (document.getElementById('notifPanel')?.classList.contains('open')) {
+    renderNotifPanel();
+  }
+}
+
+function renderBell() {
+  const unread = S.notifications.filter(n => !n.read).length;
+  const badge = document.getElementById('bellBadge');
+  if (!badge) return;
+  if (unread > 0) {
+    badge.textContent = unread > 99 ? '99+' : unread;
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+window.toggleNotifPanel = () => {
+  const panel = document.getElementById('notifPanel');
+  const isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+  } else {
+    renderNotifPanel();
+    panel.classList.add('open');
+    document.addEventListener('click', closeNotifPanelOnOutsideClick);
+  }
+};
+
+function closeNotifPanelOnOutsideClick(e) {
+  const panel = document.getElementById('notifPanel');
+  const bellBtn = document.querySelector('.bell-btn');
+  if (panel && !panel.contains(e.target) && !bellBtn.contains(e.target)) {
+    panel.classList.remove('open');
+    document.removeEventListener('click', closeNotifPanelOnOutsideClick);
+  }
+}
+
+function renderNotifPanel() {
+  const list = document.getElementById('notifList');
+  if (!S.notifications.length) {
+    list.innerHTML = `<div class="notif-empty">Nenhuma notificação ainda.<br>Você será avisado aqui quando alguém marcar você em um comentário ou quando um card seu vencer.</div>`;
+    return;
+  }
+  list.innerHTML = S.notifications.map(n => {
+    const mainText = n.type === 'overdue'
+      ? `🔴 O card ${n.card_number ? '#'+n.card_number : ''} "${esc(n.card_title||'')}" está vencido`
+      : `<b>${esc(n.mentioned_by_name||'Alguém')}</b> marcou você no card ${n.card_number ? '#'+n.card_number : ''} "${esc(n.card_title||'')}"`;
+    return `
+    <div class="notif-item ${n.read ? 'read' : 'unread'}" onclick="openNotification('${n.id}')">
+      <div class="notif-dot"></div>
+      <div class="notif-body">
+        <div class="notif-text">${mainText}</div>
+        <div class="notif-text" style="color:#5e6c84;margin-top:2px">${esc(n.comment_snippet||'')}</div>
+        <div class="notif-meta">${timeAgo(new Date(n.created_at).getTime())}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.openNotification = async (notifId) => {
+  const notif = S.notifications.find(n => n.id === notifId);
+  if (!notif) return;
+
+  if (!notif.read) {
+    const r = await S.supabase.from('notifications').update({ read: true }).eq('id', notifId);
+    if (checkErr(r, 'marcar notificação como lida')) {
+      notif.read = true;
+      renderBell();
+    }
+  }
+
+  document.getElementById('notifPanel').classList.remove('open');
+
+  if (notif.board_id && notif.board_id !== S.currentBoard) {
+    await switchBoard(notif.board_id);
+    setTimeout(() => openCard(notif.card_id), 150);
+  } else {
+    openCard(notif.card_id);
+  }
+};
+
+window.markAllNotifsRead = async () => {
+  const unreadIds = S.notifications.filter(n => !n.read).map(n => n.id);
+  if (!unreadIds.length) return;
+  const r = await S.supabase.from('notifications').update({ read: true }).in('id', unreadIds);
+  if (!checkErr(r, 'marcar notificações como lidas')) return;
+  S.notifications.forEach(n => n.read = true);
+  renderBell();
+  renderNotifPanel();
+  toast('Notificações marcadas como lidas.');
+};
+
+// ═══════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// CARD SEARCH BY ID
+// ═══════════════════════════════════════════
+window.searchCardById = async () => {
+  const input = document.getElementById('cardSearchInput');
+  let query = (input.value || '').trim();
+  if (!query) return;
+  query = query.replace(/^#/, '');
+  const num = parseInt(query, 10);
+  if (isNaN(num)) {
+    toast('Digite um número de card válido, ex: 1234');
+    return;
+  }
+
+  // First check current board's already-loaded cards (instant)
+  const localMatch = S.cards.find(c => c.card_number === num);
+  if (localMatch) {
+    input.value = '';
+    openCard(localMatch.id);
+    return;
+  }
+
+  // Not in current board — search across all boards in the database
+  const { data, error } = await S.supabase.from('cards').select('*').eq('card_number', num).maybeSingle();
+  if (error) {
+    toast('Erro ao buscar card: ' + error.message);
+    return;
+  }
+  if (!data) {
+    toast(`Nenhum card encontrado com #${num}`);
+    return;
+  }
+
+  input.value = '';
+
+  if (data.board_id === S.currentBoard) {
+    openCard(data.id);
+    return;
+  }
+
+  // Card lives in a different board — switch to it, then open the card
+  const targetBoard = S.boards.find(b => b.id === data.board_id);
+  if (!targetBoard) {
+    toast('O card existe, mas a aba dele não foi encontrada.');
+    return;
+  }
+  toast(`Abrindo card #${num} na aba "${targetBoard.title}"...`);
+  await switchBoard(data.board_id);
+  // Give the board a moment to finish rendering before opening the modal
+  setTimeout(() => openCard(data.id), 150);
+};
+
+window.exportExcel = () => {
+  const rows = [['ID','Título','Coluna','Responsáveis','Etiquetas','Prioridade','Data de Criação','Data Entrega','Checklist Total','Checklist Concluídos','Descrição','Comentários']];
+  for (const card of S.cards) {
+    const col = S.columns.find(c=>c.id===card.column_id);
+    const members = (card.members||[]).map(uid=>(S.members[uid]||{}).name||uid).join(', ');
+    const labels = (card.labels||[]).map(lid=>{const l=S.labels.find(x=>x.id===lid);return l?l.name:'';}).filter(Boolean).join(', ');
+    const checks = card.checklist||[];
+    const comms = (card.comments||[]).map(c=>`[${c.name}]: ${c.text}`).join(' | ');
+    const createdStr = card.created_at ? fmtDateTime(card.created_at) : '';
+    const idStr = card.card_number ? `#${card.card_number}` : '';
+    rows.push([idStr, card.title||'', col?.title||'', members, labels, prioLbl(card.priority||''), createdStr, card.due_date||'', checks.length, checks.filter(c=>c.done).length, card.description||'', comms]);
+  }
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Planner');
+  XLSX.writeFile(wb, `planner_${new Date().toISOString().split('T')[0]}.xlsx`);
+  toast('Planilha exportada!');
+};
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function initials(name) {
+  if (!name) return '?';
+  const p = name.trim().split(' ');
+  return (p[0][0]+(p[1]?.[0]||'')).toUpperCase();
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function linkify(s) {
+  // Always escape first (XSS safety), then convert URLs in the
+  // already-escaped text into clickable anchor tags.
+  const escaped = esc(s);
+  const urlRegex = /(\bhttps?:\/\/[^\s<]+[^\s<.,;:!?)'"]|(?<![@\w])www\.[^\s<]+[^\s<.,;:!?)'"])/gi;
+  return escaped.replace(urlRegex, (match) => {
+    const href = match.startsWith('www.') ? 'https://' + match : match;
+    return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="content-link">${match}</a>`;
+  });
+}
+function localDateString(date = new Date()) {
+  // Returns YYYY-MM-DD based on the browser's LOCAL timezone, not UTC.
+  // Using toISOString() for this purpose is a common bug: it returns the
+  // UTC date, which can be a day ahead of the local date (e.g. in Brazil,
+  // UTC-3, from ~21:00 to 23:59 local time UTC is already the next day).
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+function fmtDateTime(iso) {
+  if (!iso) return '';
+  const dt = new Date(iso);
+  if (isNaN(dt.getTime())) return '';
+  const dd = String(dt.getDate()).padStart(2,'0');
+  const mm = String(dt.getMonth()+1).padStart(2,'0');
+  const yy = dt.getFullYear();
+  const hh = String(dt.getHours()).padStart(2,'0');
+  const mi = String(dt.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yy} às ${hh}:${mi}`;
+}
+function timeAgo(ts) {
+  if (!ts) return '';
+  const diff = Date.now()-ts;
+  if (diff<60000) return 'agora';
+  if (diff<3600000) return Math.floor(diff/60000)+'min atrás';
+  if (diff<86400000) return Math.floor(diff/3600000)+'h atrás';
+  return Math.floor(diff/86400000)+'d atrás';
+}
+function prioLbl(p) {
+  return {alta:'Alta prioridade',baixa:'Baixa prioridade',aguardando:'Aguardando Aprovação'}[p]||p||'';
+}
+window.toast = (msg) => {
+  const t = document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.getElementById('toastWrap').appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+};
+
+// Close selectors on outside click
+// member selector is inline in sidebar
+document.addEventListener('keydown', e => {
+  if (e.key==='Enter') {
+    const lo = document.getElementById('loginForm');
+    if (lo && lo.style.display!=='none' && document.getElementById('authOverlay').style.display!=='none') doLogin();
+  }
+});
+
+// ═══════════════════════════════════════════
+// GLOBAL SAFETY NET
+// Ensures a stray uncaught error never leaves the UI permanently
+// stuck (e.g. _switchingBoard locked to true forever).
+// ═══════════════════════════════════════════
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('[unhandledrejection]', event.reason);
+  if (S._switchingBoard) {
+    console.warn('[safety net] releasing stuck switchingBoard lock');
+    S._switchingBoard = false;
+  }
+});
+window.addEventListener('error', (event) => {
+  console.error('[global error]', event.error || event.message);
+  if (S._switchingBoard) {
+    console.warn('[safety net] releasing stuck switchingBoard lock');
+    S._switchingBoard = false;
+  }
+});
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+(async () => {
+  const config = loadConfig();
+  if (!config) {
+    document.getElementById('setupOverlay').style.display = '';
+  } else {
+    await initSupabase(config.url, config.key);
+  }
+})();
+
+// Override renderBoard to use new column structure
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  for (const col of S.columns) {
+    const colCards = S.cards.filter(c => c.column_id === col.id).sort((a,b) => (a.ord||0)-(b.ord||0));
+    const accentClass = `acc-${col.color||'custom'}`;
+    const el = document.createElement('div');
+    el.className = 'column';
+    el.dataset.colId = col.id;
+    el.innerHTML = `
+      <div class="col-header">
+        <div class="col-title-wrap">
+          <div class="col-accent ${accentClass}"></div>
+          <input class="col-title" value="${esc(col.title)}" onblur="saveColTitle('${col.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+          <span class="col-count">${colCards.length}</span>
+        </div>
+        <button class="col-menu" onclick="openColMenu(event,'${col.id}')">⋯</button>
+      </div>
+      <div class="col-body">
+        <div class="col-cards" id="cards-${col.id}"
+          ondragover="onDragOver(event,'${col.id}')"
+          ondrop="onDrop(event,'${col.id}')"
+          ondragleave="onDragLeave(event)">
+          ${colCards.map(c => cardHtml(c)).join('')}
+        </div>
+        <div class="col-footer">
+          <button class="add-card-btn" onclick="showAddForm('${col.id}')">
+            <span class="add-icon">＋</span> Adicionar card
+          </button>
+        </div>
+      </div>`;
+    board.appendChild(el);
+  }
+  const addBtn = document.createElement('button');
+  addBtn.className = 'add-col-btn';
+  addBtn.innerHTML = '＋ Adicionar coluna';
+  addBtn.onclick = addColumn;
+  board.appendChild(addBtn);
+}
+
+// Override renderBoard to use new column structure
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  for (const col of S.columns) {
+    const colCards = S.cards.filter(c => c.column_id === col.id).sort((a,b) => (a.ord||0)-(b.ord||0));
+    const accentClass = `acc-${col.color||'custom'}`;
+    const el = document.createElement('div');
+    el.className = 'column';
+    el.dataset.colId = col.id;
+    el.innerHTML = `
+      <div class="col-header">
+        <div class="col-title-wrap">
+          <div class="col-accent ${accentClass}"></div>
+          <input class="col-title" value="${esc(col.title)}" onblur="saveColTitle('${col.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+          <span class="col-count">${colCards.length}</span>
+        </div>
+        <button class="col-menu" onclick="openColMenu(event,'${col.id}')">⋯</button>
+      </div>
+      <div class="col-body">
+        <div class="col-cards" id="cards-${col.id}"
+          ondragover="onDragOver(event,'${col.id}')"
+          ondrop="onDrop(event,'${col.id}')"
+          ondragleave="onDragLeave(event)">
+          ${colCards.map(c => cardHtml(c)).join('')}
+        </div>
+        <div class="col-footer">
+          <button class="add-card-btn" onclick="showAddForm('${col.id}')">
+            <span class="add-icon">＋</span> Adicionar card
+          </button>
+        </div>
+      </div>`;
+    board.appendChild(el);
+  }
+  const addBtn = document.createElement('button');
+  addBtn.className = 'add-col-btn';
+  addBtn.innerHTML = '＋ Adicionar coluna';
+  addBtn.onclick = addColumn;
+  board.appendChild(addBtn);
+}
+
+
+// Override renderBoard with new column structure
+// ═══════════════════════════════════════════
+// COLUMN COLLAPSE
+// ═══════════════════════════════════════════
+window.toggleColumnCollapse = (colId) => {
+  if (S.collapsedColumns.has(colId)) {
+    S.collapsedColumns.delete(colId);
+  } else {
+    S.collapsedColumns.add(colId);
+  }
+  saveCollapsedColumns();
+  renderBoard();
+};
+
+// ═══════════════════════════════════════════
+// FILTERS (Responsável / Prioridade)
+// ═══════════════════════════════════════════
+function matchesFilters(card) {
+  if (S.filters.member && !(card.members||[]).includes(S.filters.member)) return false;
+  if (S.filters.priority && card.priority !== S.filters.priority) return false;
+  return true;
+}
+
+function populateFilterOptions() {
+  const sel = document.getElementById('filterMember');
+  if (!sel) return;
+  const currentValue = sel.value;
+  const sorted = Object.entries(S.members).sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
+  sel.innerHTML = '<option value="">👤 Todos os responsáveis</option>' +
+    sorted.map(([uid, m]) => `<option value="${uid}">${esc(m.name)}</option>`).join('');
+  // Preserve the previously selected value if it still exists in the list
+  if (sorted.some(([uid]) => uid === currentValue)) sel.value = currentValue;
+}
+
+window.applyFilters = () => {
+  S.filters.member = document.getElementById('filterMember').value;
+  S.filters.priority = document.getElementById('filterPriority').value;
+  const active = !!(S.filters.member || S.filters.priority);
+  document.getElementById('filterClearBtn').style.display = active ? '' : 'none';
+  renderBoard();
+};
+
+window.clearFilters = () => {
+  S.filters = { member: '', priority: '' };
+  document.getElementById('filterMember').value = '';
+  document.getElementById('filterPriority').value = '';
+  document.getElementById('filterClearBtn').style.display = 'none';
+  renderBoard();
+};
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  const accMap = {afazer:'acc-afazer',andamento:'acc-andamento',revisao:'acc-revisao',aprovacao:'acc-aprovacao',concluido:'acc-concluido'};
+  for (const col of S.columns) {
+    const colCards = S.cards
+      .filter(c => c.column_id === col.id)
+      .filter(matchesFilters)
+      .sort((a,b) => (a.ord||0)-(b.ord||0));
+    const acc = accMap[col.color] || 'acc-custom';
+    const isCollapsed = S.collapsedColumns.has(col.id);
+    const el = document.createElement('div');
+    el.className = 'column' + (isCollapsed ? ' is-collapsed' : '');
+    el.dataset.colId = col.id;
+    el.innerHTML = `
+      <div class="col-header">
+        <button class="col-collapse-btn ${isCollapsed ? 'collapsed' : ''}" onclick="toggleColumnCollapse('${col.id}')" title="${isCollapsed ? 'Expandir coluna' : 'Recolher coluna'}">▾</button>
+        <div class="col-title-wrap">
+          <div class="col-accent ${acc}"></div>
+          <input class="col-title" value="${esc(col.title)}" onblur="saveColTitle('${col.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+          <span class="col-count">${colCards.length}</span>
+        </div>
+        <button class="col-menu" onclick="openColMenu(event,'${col.id}')">⋯</button>
+      </div>
+      <div class="col-body">
+        <div class="col-cards" id="cards-${col.id}"
+          ondragover="onDragOver(event,'${col.id}')"
+          ondrop="onDrop(event,'${col.id}')"
+          ondragleave="onDragLeave(event)">
+          ${colCards.map(c => cardHtml(c)).join('')}
+        </div>
+        <div class="col-footer">
+          <button class="add-card-btn" onclick="showAddForm('${col.id}')">＋ Adicionar card</button>
+        </div>
+      </div>`;
+    board.appendChild(el);
+  }
+  const addBtn = document.createElement('button');
+  addBtn.className = 'add-col-btn';
+  addBtn.innerHTML = '＋ Adicionar coluna';
+  addBtn.onclick = addColumn;
+  board.appendChild(addBtn);
+}
+</script>
+</body>
+</html>
