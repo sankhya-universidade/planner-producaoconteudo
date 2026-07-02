@@ -37,7 +37,14 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:#f0f4f8;min-height
 .card-search-wrap{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:7px;padding:6px 10px;transition:border .15s}
 .card-search-wrap:focus-within{border-color:#2ecc52}
 .card-search-icon{font-size:12px;opacity:.6;flex-shrink:0}
-.card-search-input{background:none;border:none;outline:none;color:#fff;font-size:12px;font-family:monospace;width:110px}
+.card-search-input{background:none;border:none;outline:none;color:#fff;font-size:12px;font-family:monospace;width:150px}
+.search-dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.25);border:1px solid #e8ecf0;z-index:3001;max-height:320px;overflow-y:auto;display:none}
+.search-dropdown.open{display:block}
+.search-result{display:flex;flex-direction:column;gap:2px;padding:9px 12px;cursor:pointer;border-bottom:1px solid #f4f5f7}
+.search-result:last-child{border-bottom:none}
+.search-result:hover{background:#f8fafc}
+.search-result-title{font-size:13px;color:#172b4d;font-weight:600}
+.search-result-meta{font-size:11px;color:#94a3b8;font-family:monospace}
 .card-search-input::placeholder{color:rgba(255,255,255,.4);font-family:inherit}
 .btn-export:hover{background:#2ecc52;color:#0f1f3d}
 .btn-new{background:#2ecc52;color:#0f1f3d;border:none;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 2px 8px rgba(46,204,82,.3)}
@@ -81,7 +88,10 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:#f0f4f8;min-height
 .board-wrap{padding:24px 28px;overflow-x:auto;min-height:calc(100vh - 64px)}
 .board{display:flex;gap:20px;align-items:flex-start;min-height:calc(100vh - 112px)}
 .column{width:290px;min-width:290px;display:flex;flex-direction:column;max-height:calc(100vh - 112px)}
-.col-header{padding:0 0 10px 0;display:flex;align-items:center;justify-content:space-between}
+.col-header{padding:0 0 10px 0;display:flex;align-items:center;justify-content:space-between;cursor:grab}
+.col-header.col-dragging{opacity:.4}
+.column.col-drop-before{box-shadow:-3px 0 0 0 #2ecc52}
+.column.col-drop-after{box-shadow:3px 0 0 0 #2ecc52}
 .col-title-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
 .col-accent{width:4px;height:22px;border-radius:2px;flex-shrink:0}
 .col-title{font-size:12px;font-weight:800;color:#172b4d;flex:1;border:none;background:none;font-family:inherit;cursor:text;outline:none;padding:2px 4px;border-radius:3px;text-transform:uppercase;letter-spacing:.7px}
@@ -301,9 +311,10 @@ input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
     </div>
   </div>
   <div class="header-right">
-    <div class="card-search-wrap">
+    <div class="card-search-wrap" style="position:relative">
       <span class="card-search-icon">🔍</span>
-      <input type="text" class="card-search-input" id="cardSearchInput" placeholder="Buscar por #ID" onkeydown="if(event.key==='Enter')searchCardById()">
+      <input type="text" class="card-search-input" id="cardSearchInput" placeholder="Buscar por #ID ou título" onkeydown="if(event.key==='Enter')searchCardById()" oninput="if(!this.value.trim())closeSearchDropdown()">
+      <div class="search-dropdown" id="searchDropdown"></div>
     </div>
     <button class="btn-export" onclick="exportExcel()">⬇ Exportar Excel</button>
     <button class="btn-new" onclick="openNewCardGlobal()">＋ Novo Card</button>
@@ -1786,18 +1797,26 @@ window.markAllNotifsRead = async () => {
 // EXPORT
 // ═══════════════════════════════════════════
 // ═══════════════════════════════════════════
-// CARD SEARCH BY ID
+// CARD SEARCH BY ID OR TITLE
 // ═══════════════════════════════════════════
 window.searchCardById = async () => {
   const input = document.getElementById('cardSearchInput');
   let query = (input.value || '').trim();
   if (!query) return;
-  query = query.replace(/^#/, '');
-  const num = parseInt(query, 10);
-  if (isNaN(num)) {
-    toast('Digite um número de card válido, ex: 1234');
-    return;
+
+  const idCandidate = query.replace(/^#/, '');
+  const isNumeric = /^\d+$/.test(idCandidate);
+
+  if (isNumeric) {
+    await searchByCardNumber(parseInt(idCandidate, 10));
+  } else {
+    await searchByTitle(query);
   }
+};
+
+async function searchByCardNumber(num) {
+  const input = document.getElementById('cardSearchInput');
+  closeSearchDropdown();
 
   // First check current board's already-loaded cards (instant)
   const localMatch = S.cards.find(c => c.card_number === num);
@@ -1819,23 +1838,85 @@ window.searchCardById = async () => {
   }
 
   input.value = '';
+  await navigateToCard(data);
+}
 
-  if (data.board_id === S.currentBoard) {
-    openCard(data.id);
+async function searchByTitle(query) {
+  const input = document.getElementById('cardSearchInput');
+
+  // Search title across ALL boards (case-insensitive partial match)
+  const { data, error } = await S.supabase.from('cards').select('*').ilike('title', `%${query}%`).limit(20);
+  if (error) {
+    toast('Erro ao buscar card: ' + error.message);
+    return;
+  }
+  if (!data || !data.length) {
+    toast(`Nenhum card encontrado com o título "${query}"`);
+    closeSearchDropdown();
     return;
   }
 
+  if (data.length === 1) {
+    input.value = '';
+    closeSearchDropdown();
+    await navigateToCard(data[0]);
+    return;
+  }
+
+  renderSearchDropdown(data);
+}
+
+function renderSearchDropdown(results) {
+  const dd = document.getElementById('searchDropdown');
+  dd.innerHTML = results.map(card => {
+    const board = S.boards.find(b => b.id === card.board_id);
+    const boardName = board ? esc(board.title) : '';
+    return `<div class="search-result" onmousedown="event.preventDefault();selectSearchResult('${card.id}')">
+      <div class="search-result-title">${esc(card.title||'Sem título')}</div>
+      <div class="search-result-meta">#${card.card_number||'—'}${boardName ? ' · '+boardName : ''}</div>
+    </div>`;
+  }).join('');
+  dd.classList.add('open');
+}
+
+window.selectSearchResult = async (cardId) => {
+  const input = document.getElementById('cardSearchInput');
+  closeSearchDropdown();
+  const { data, error } = await S.supabase.from('cards').select('*').eq('id', cardId).maybeSingle();
+  if (error || !data) {
+    toast('Erro ao abrir o card selecionado.');
+    return;
+  }
+  input.value = '';
+  await navigateToCard(data);
+};
+
+window.closeSearchDropdown = () => {
+  const dd = document.getElementById('searchDropdown');
+  if (dd) dd.classList.remove('open');
+};
+
+async function navigateToCard(cardData) {
+  if (cardData.board_id === S.currentBoard) {
+    openCard(cardData.id);
+    return;
+  }
   // Card lives in a different board — switch to it, then open the card
-  const targetBoard = S.boards.find(b => b.id === data.board_id);
+  const targetBoard = S.boards.find(b => b.id === cardData.board_id);
   if (!targetBoard) {
     toast('O card existe, mas a aba dele não foi encontrada.');
     return;
   }
-  toast(`Abrindo card #${num} na aba "${targetBoard.title}"...`);
-  await switchBoard(data.board_id);
+  toast(`Abrindo card em "${targetBoard.title}"...`);
+  await switchBoard(cardData.board_id);
   // Give the board a moment to finish rendering before opening the modal
-  setTimeout(() => openCard(data.id), 150);
-};
+  setTimeout(() => openCard(cardData.id), 150);
+}
+
+document.addEventListener('click', (e) => {
+  const wrap = document.querySelector('.card-search-wrap');
+  if (wrap && !wrap.contains(e.target)) closeSearchDropdown();
+});
 
 window.exportExcel = () => {
   const rows = [['ID','Título','Coluna','Responsáveis','Etiquetas','Prioridade','Data de Criação','Data Entrega','Checklist Total','Checklist Concluídos','Descrição','Comentários']];
@@ -2060,6 +2141,82 @@ window.toggleColumnCollapse = (colId) => {
 };
 
 // ═══════════════════════════════════════════
+// COLUMN DRAG-AND-DROP REORDERING
+// ═══════════════════════════════════════════
+S._colDragId = null;
+S._colDropSide = null;
+
+window.onColDragStart = (e, colId) => {
+  S._colDragId = colId;
+  e.dataTransfer.effectAllowed = 'move';
+  requestAnimationFrame(() => {
+    e.target.classList.add('col-dragging');
+  });
+};
+
+window.onColDragEnd = (e) => {
+  e.target.classList.remove('col-dragging');
+  document.querySelectorAll('.column.col-drop-before,.column.col-drop-after')
+    .forEach(el => el.classList.remove('col-drop-before','col-drop-after'));
+  S._colDragId = null;
+  S._colDropSide = null;
+};
+
+window.onColDragOver = (e, targetColId) => {
+  if (!S._colDragId || S._colDragId === targetColId) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const targetEl = document.querySelector(`.column[data-col-id="${targetColId}"]`);
+  if (!targetEl) return;
+  const rect = targetEl.getBoundingClientRect();
+  const isBefore = e.clientX < rect.left + rect.width / 2;
+  document.querySelectorAll('.column.col-drop-before,.column.col-drop-after')
+    .forEach(el => el.classList.remove('col-drop-before','col-drop-after'));
+  targetEl.classList.add(isBefore ? 'col-drop-before' : 'col-drop-after');
+  S._colDropSide = isBefore ? 'before' : 'after';
+};
+
+window.onColDragLeave = (e, colId) => {
+  // Handled by onColDragOver recomputing on the next hovered column;
+  // no per-element cleanup needed here to avoid flicker between siblings.
+};
+
+window.onColDrop = async (e, targetColId) => {
+  e.preventDefault();
+  const sourceColId = S._colDragId;
+  const side = S._colDropSide;
+  document.querySelectorAll('.column.col-drop-before,.column.col-drop-after')
+    .forEach(el => el.classList.remove('col-drop-before','col-drop-after'));
+  if (!sourceColId || sourceColId === targetColId) return;
+
+  const cols = [...S.columns].sort((a,b) => (a.ord||0)-(b.ord||0));
+  const fromIdx = cols.findIndex(c => c.id === sourceColId);
+  if (fromIdx === -1) return;
+  const [moved] = cols.splice(fromIdx, 1);
+
+  let targetIdx = cols.findIndex(c => c.id === targetColId);
+  if (targetIdx === -1) targetIdx = cols.length;
+  if (side === 'after') targetIdx += 1;
+  cols.splice(targetIdx, 0, moved);
+
+  // Optimistic local reorder for instant feedback
+  S.columns = cols;
+  renderBoard();
+
+  // Persist new order in the background
+  const results = await Promise.all(
+    cols.map((c,i) => S.supabase.from('columns').update({ ord: i }).eq('id', c.id))
+  );
+  const failed = results.find(r => r.error);
+  if (failed) {
+    toast('Erro ao salvar a nova ordem das colunas: ' + failed.error.message);
+    await loadBoardData(S.currentBoard);
+    return;
+  }
+  cols.forEach((c,i) => { c.ord = i; });
+};
+
+// ═══════════════════════════════════════════
 // FILTERS (Responsável / Prioridade)
 // ═══════════════════════════════════════════
 function matchesFilters(card) {
@@ -2110,7 +2267,12 @@ function renderBoard() {
     el.className = 'column' + (isCollapsed ? ' is-collapsed' : '');
     el.dataset.colId = col.id;
     el.innerHTML = `
-      <div class="col-header">
+      <div class="col-header" draggable="true"
+        ondragstart="onColDragStart(event,'${col.id}')"
+        ondragend="onColDragEnd(event)"
+        ondragover="onColDragOver(event,'${col.id}')"
+        ondragleave="onColDragLeave(event,'${col.id}')"
+        ondrop="onColDrop(event,'${col.id}')">
         <button class="col-collapse-btn ${isCollapsed ? 'collapsed' : ''}" onclick="toggleColumnCollapse('${col.id}')" title="${isCollapsed ? 'Expandir coluna' : 'Recolher coluna'}">▾</button>
         <div class="col-title-wrap">
           <div class="col-accent ${acc}"></div>
