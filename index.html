@@ -166,10 +166,17 @@ textarea.minput:focus{background:#fff;border-color:#2ecc52}
 select.msel{width:100%;background:#fff;border:1.5px solid #e8ecf0;border-radius:7px;padding:7px 10px;font-size:12px;color:#172b4d;font-family:inherit;outline:none;cursor:pointer;font-weight:600}
 input[type=date].mdate{width:100%;background:#fff;border:1.5px solid #e8ecf0;border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;color:#172b4d;outline:none;cursor:pointer;font-weight:600}
 input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
-.chk-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0}
+.chk-item{display:flex;align-items:flex-start;gap:6px;padding:6px 4px;border-radius:6px;transition:background .12s}
+.chk-item:hover{background:#f8fafc}
+.chk-item.chk-dragging{opacity:.4}
+.chk-handle{cursor:grab;color:#cbd5e1;font-size:14px;flex-shrink:0;margin-top:4px;line-height:1;user-select:none;opacity:0;transition:opacity .12s}
+.chk-item:hover .chk-handle{opacity:1}
+.chk-handle:active{cursor:grabbing}
 .chk-item input[type=checkbox]{width:15px;height:15px;cursor:pointer;flex-shrink:0;accent-color:#2ecc52;margin-top:3px}
-.chk-text{font-size:13px;color:#172b4d;flex:1;cursor:pointer;word-break:break-word;overflow-wrap:break-word;line-height:1.5;min-width:0}
-.chk-text.done{text-decoration:line-through;color:#b0b8c4}
+.chk-text-input{font-size:13px;color:#172b4d;flex:1;width:100%;cursor:text;word-break:break-word;overflow-wrap:break-word;line-height:1.5;min-width:0;border:1px solid transparent;background:transparent;font-family:inherit;padding:2px 4px;border-radius:4px;outline:none}
+.chk-text-input:hover{border-color:#e8ecf0;background:#fff}
+.chk-text-input:focus{border-color:#2ecc52;background:#fff}
+.chk-text-input.done{text-decoration:line-through;color:#b0b8c4}
 .chk-del{background:none;border:none;color:#cbd5e1;cursor:pointer;font-size:14px;opacity:0;padding:2px 4px;border-radius:3px;flex-shrink:0;margin-top:2px}
 .chk-item:hover .chk-del{opacity:1}
 .chk-del:hover{background:#fef2f2;color:#dc2626}
@@ -185,13 +192,15 @@ input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
 .comm-send{background:#2ecc52;color:#0f1f3d;border:none;padding:8px 14px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:700;white-space:nowrap}
 .comm-send:hover{background:#27ae47}
 .lbl-grid{display:flex;flex-direction:column;gap:4px}
-.lbl-row{display:flex;align-items:center;gap:5px;cursor:pointer;border-radius:6px;border:2px solid transparent;overflow:hidden}
-.lbl-row:hover{border-color:rgba(0,0,0,.2)}
+.lbl-row{display:flex;align-items:center;gap:5px;border-radius:8px;border:2px solid transparent;overflow:hidden}
 .lbl-row.lbl-active{border-color:#0f1f3d}
-.lbl-flag{flex:1;height:30px;display:flex;align-items:center;padding:0 10px}
-.lbl-name{flex:1;border:none;background:transparent;font-size:11px;font-weight:700;font-family:inherit;color:#fff;outline:none;padding:0;text-shadow:0 1px 2px rgba(0,0,0,.25);cursor:pointer;letter-spacing:.3px}
+.lbl-flag{flex:1;height:36px;display:flex;align-items:center;gap:8px;padding:0 8px 0 10px}
+.lbl-name{flex:1;border:none;background:transparent;font-size:11px;font-weight:700;font-family:inherit;color:#fff;outline:none;padding:2px 0;text-shadow:0 1px 2px rgba(0,0,0,.25);cursor:text;letter-spacing:.3px;min-width:0}
 .lbl-name::placeholder{color:rgba(255,255,255,.6)}
-.lbl-chk{width:14px;height:14px;flex-shrink:0;cursor:pointer;accent-color:#2ecc52;margin-right:6px}
+.lbl-name:focus{background:rgba(0,0,0,.12);border-radius:4px;padding:2px 5px}
+.lbl-chk-wrap{display:flex;align-items:center;justify-content:center;width:26px;height:26px;background:rgba(255,255,255,.92);border-radius:7px;flex-shrink:0;cursor:pointer;transition:background .12s}
+.lbl-chk-wrap:hover{background:#fff}
+.lbl-chk{width:17px;height:17px;cursor:pointer;accent-color:#0f1f3d;margin:0}
 .active-labels{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
 .act-lbl{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;cursor:pointer;color:#fff;display:inline-flex;align-items:center;gap:4px;letter-spacing:.3px}
 .act-lbl:hover{opacity:.8}
@@ -1193,11 +1202,13 @@ function renderLblGrid() {
   const card = S.cards.find(c=>c.id===S.currentCard);
   const active = card?.labels||[];
   document.getElementById('lblGrid').innerHTML = S.labels.map(l => `
-    <div class="lbl-row ${active.includes(l.id)?'lbl-active':''}" onclick="toggleLabel('${l.id}')">
+    <div class="lbl-row ${active.includes(l.id)?'lbl-active':''}">
       <div class="lbl-flag" style="background:${l.color}">
-        <input class="lbl-name" value="${l.name||''}" placeholder="Nome da etiqueta" onclick="event.stopPropagation()" onblur="saveLblName('${l.id}',this.value)">
+        <input class="lbl-name" value="${l.name||''}" placeholder="Nome da etiqueta" onblur="saveLblName('${l.id}',this.value)">
+        <label class="lbl-chk-wrap" title="Selecionar etiqueta">
+          <input type="checkbox" class="lbl-chk" ${active.includes(l.id)?'checked':''} onchange="toggleLabel('${l.id}')">
+        </label>
       </div>
-      <input type="checkbox" class="lbl-chk" ${active.includes(l.id)?'checked':''} onclick="event.stopPropagation()" onchange="toggleLabel('${l.id}')">
     </div>`).join('');
 }
 
@@ -1285,9 +1296,16 @@ function renderChecklist(card) {
   document.getElementById('chkPct').textContent = items.length ? `${done}/${items.length}` : '';
   document.getElementById('chkBar').style.width = pct+'%';
   document.getElementById('chkItems').innerHTML = items.map((item,i) => `
-    <div class="chk-item">
+    <div class="chk-item" draggable="true"
+      ondragstart="onChkDragStart(event,${i})"
+      ondragend="onChkDragEnd(event)"
+      ondragover="onChkDragOver(event)"
+      ondrop="onChkDrop(event,${i})">
+      <span class="chk-handle" title="Arrastar para reordenar">⠿</span>
       <input type="checkbox" ${item.done?'checked':''} onchange="toggleChk(${i},this.checked)">
-      <span class="chk-text ${item.done?'done':''}" onclick="this.previousElementSibling.click()">${esc(item.text)}</span>
+      <input class="chk-text-input ${item.done?'done':''}" value="${esc(item.text)}"
+        onblur="saveChkText(${i},this.value)"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">
       <button class="chk-del" onclick="removeChk(${i})">✕</button>
     </div>`).join('');
 }
@@ -1315,11 +1333,70 @@ window.toggleChk = async (idx, done) => {
   renderChecklist(S.cards.find(c=>c.id===S.currentCard));
 };
 
+window.saveChkText = async (idx, newText) => {
+  newText = newText.trim();
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  if (!card) return;
+  const current = (card.checklist||[])[idx];
+  if (!current) return;
+  if (!newText) {
+    // Don't allow saving an empty item — revert visually to the original text
+    renderChecklist(card);
+    return;
+  }
+  if (newText === current.text) return; // no change, skip unnecessary write
+  const checklist = (card.checklist||[]).map((item,i) => i===idx ? {...item,text:newText} : item);
+  const r = await S.supabase.from('cards').update({checklist}).eq('id', S.currentCard);
+  if (!checkErr(r, 'editar item do checklist')) return;
+  await loadBoardData(S.currentBoard);
+  renderChecklist(S.cards.find(c=>c.id===S.currentCard));
+};
+
 window.removeChk = async (idx) => {
   const card = S.cards.find(c=>c.id===S.currentCard);
   const checklist = (card.checklist||[]).filter((_,i)=>i!==idx);
   const r = await S.supabase.from('cards').update({checklist}).eq('id', S.currentCard);
   if (!checkErr(r, 'remover item do checklist')) return;
+  await loadBoardData(S.currentBoard);
+  renderChecklist(S.cards.find(c=>c.id===S.currentCard));
+};
+
+// ═══════════════════════════════════════════
+// CHECKLIST DRAG-AND-DROP REORDERING
+// ═══════════════════════════════════════════
+S._chkDragIndex = null;
+
+window.onChkDragStart = (e, idx) => {
+  S._chkDragIndex = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  requestAnimationFrame(() => {
+    e.target.classList.add('chk-dragging');
+  });
+};
+
+window.onChkDragEnd = (e) => {
+  e.target.classList.remove('chk-dragging');
+  S._chkDragIndex = null;
+};
+
+window.onChkDragOver = (e) => {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+};
+
+window.onChkDrop = async (e, targetIdx) => {
+  e.preventDefault();
+  const sourceIdx = S._chkDragIndex;
+  if (sourceIdx === null || sourceIdx === targetIdx) return;
+
+  const card = S.cards.find(c=>c.id===S.currentCard);
+  if (!card) return;
+  const checklist = [...(card.checklist||[])];
+  const [moved] = checklist.splice(sourceIdx, 1);
+  checklist.splice(targetIdx, 0, moved);
+
+  const r = await S.supabase.from('cards').update({checklist}).eq('id', S.currentCard);
+  if (!checkErr(r, 'reordenar checklist')) return;
   await loadBoardData(S.currentBoard);
   renderChecklist(S.cards.find(c=>c.id===S.currentCard));
 };
