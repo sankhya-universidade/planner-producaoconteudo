@@ -123,8 +123,8 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:#f0f4f8;min-height
 .card-label{font-size:9.5px;font-weight:700;color:#fff;padding:3px 9px;border-radius:5px;letter-spacing:.4px;text-shadow:0 1px 2px rgba(0,0,0,.2);line-height:1.4;text-transform:uppercase}
 .card-num{font-size:10px;font-weight:700;color:#b0b8c4;letter-spacing:.4px;display:block;margin-bottom:4px;font-family:monospace}
 .card-title{font-size:13.5px;color:#172b4d;font-weight:600;line-height:1.5;margin-bottom:10px;word-break:break-word}
-.card-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:10px}
-.card-badges{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.card-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:6px;margin-top:10px}
+.card-badges{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;min-width:0}
 .card-badge{font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:3px;font-weight:500}
 .card-badge svg{width:12px;height:12px;flex-shrink:0;opacity:.75}
 .card-avatars{display:flex}
@@ -963,11 +963,11 @@ function cardHtml(card) {
   const dueHtml = card.due_date ? (()=>{
     const today = localDateString();
     const cls = card.due_date < today ? 'due-over' : card.due_date === today ? 'due-today' : 'due-ok';
-    return `<span class="card-due ${cls}">${ICON_CALENDAR} ${fmtDate(card.due_date)}</span>`;
+    return `<span class="card-due ${cls}">${ICON_CALENDAR} ${fmtDateShort(card.due_date)}</span>`;
   })() : '';
   const prioHtml = card.priority ? `<span class="prio-badge prio-${card.priority}">${prioLbl(card.priority)}</span>` : '';
   const commCount = (card.comments||[]).length;
-  const createdHtml = card.created_at ? `<span class="card-badge" title="Criado em">${ICON_CALENDAR} ${fmtDate(card.created_at.split('T')[0])}</span>` : '';
+  const createdHtml = card.created_at ? `<span class="card-badge" title="Criado em ${fmtDate(card.created_at.split('T')[0])}">${ICON_CALENDAR} ${fmtDateShort(card.created_at.split('T')[0])}</span>` : '';
   const cardNumHtml = card.card_number ? `<span class="card-num">#${card.card_number}</span>` : '';
   return `<div class="card" id="card-${card.id}" draggable="true"
     ondragstart="onDragStart(event,'${card.id}')"
@@ -1980,6 +1980,11 @@ function fmtDate(d) {
   if (!d) return '';
   const [y,m,day] = d.split('-');
   return `${day}/${m}/${y}`;
+}
+function fmtDateShort(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}`;
 }
 function fmtDateTime(iso) {
   if (!iso) return '';
