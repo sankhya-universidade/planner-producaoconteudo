@@ -104,7 +104,7 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:#f0f4f8;min-height
 .col-collapse-btn.collapsed{transform:rotate(-90deg)}
 .column.is-collapsed .col-body{display:none}
 .col-body{background:#fff;border-radius:12px;flex:1;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.04)}
-.col-cards{padding:8px;overflow-y:auto;flex:1;min-height:40px}
+.col-cards{padding:9px;overflow-y:auto;flex:1;min-height:40px}
 .col-footer{padding:4px 8px 8px;border-top:1px solid #f1f5f9}
 .add-card-btn{width:100%;background:none;border:none;text-align:left;padding:8px 10px;border-radius:7px;color:#94a3b8;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;font-weight:500}
 .add-card-btn:hover{background:#f0fdf4;color:#16a34a}
@@ -116,30 +116,36 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:#f0f4f8;min-height
 .acc-aprovacao{background:#8b5cf6}
 .acc-concluido{background:#0f1f3d}
 .acc-custom{background:#94a3b8}
-.card{background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:7px;cursor:pointer;border:1px solid #e8ecf0;border-left:3px solid #e8ecf0;transition:box-shadow .15s,transform .1s,border-color .15s;position:relative;user-select:none}
+.card{background:#fff;border-radius:10px;padding:13px 14px;margin-bottom:8px;cursor:pointer;border:1px solid #e8ecf0;border-left:3px solid #e8ecf0;transition:box-shadow .15s,transform .1s,border-color .15s;position:relative;user-select:none}
 .card:hover{box-shadow:0 4px 16px rgba(0,0,0,.09);transform:translateY(-1px);border-left-color:#2ecc52}
 .card.dragging{opacity:.4;transform:rotate(1.5deg) scale(.97)}
-.card-labels{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
-.card-label{font-size:10px;font-weight:700;color:#fff;padding:2px 8px;border-radius:4px;letter-spacing:.3px;text-shadow:0 1px 2px rgba(0,0,0,.2);line-height:1.4}
-.card-num{font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:.3px;display:block;margin-bottom:3px;font-family:monospace}
-.card-title{font-size:13px;color:#172b4d;font-weight:600;line-height:1.45;margin-bottom:8px;word-break:break-word}
-.card-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
-.card-badges{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
-.card-badge{font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:2px}
+.card-labels{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
+.card-label{font-size:9.5px;font-weight:700;color:#fff;padding:3px 9px;border-radius:5px;letter-spacing:.4px;text-shadow:0 1px 2px rgba(0,0,0,.2);line-height:1.4;text-transform:uppercase}
+.card-num{font-size:10px;font-weight:700;color:#b0b8c4;letter-spacing:.4px;display:block;margin-bottom:4px;font-family:monospace}
+.card-title{font-size:13.5px;color:#172b4d;font-weight:600;line-height:1.5;margin-bottom:10px;word-break:break-word}
+.card-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:10px}
+.card-badges{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.card-badge{font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:3px;font-weight:500}
+.card-badge svg{width:12px;height:12px;flex-shrink:0;opacity:.75}
 .card-avatars{display:flex}
 .card-avatar{width:22px;height:22px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #fff;margin-left:-5px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .card-avatar:first-child{margin-left:0}
-.card-due{font-size:11px;padding:2px 7px;border-radius:10px;display:flex;align-items:center;gap:3px;font-weight:600}
+.card-due{font-size:11px;padding:3px 8px;border-radius:6px;display:flex;align-items:center;gap:4px;font-weight:600}
+.card-due svg{width:12px;height:12px;flex-shrink:0}
 .due-over{background:#fef2f2;color:#dc2626}
 .due-today{background:#fefce8;color:#ca8a04}
 .due-ok{background:#f0fdf4;color:#16a34a}
-.prio-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:3px;margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
-.prio-alta{background:#fef2f2;color:#dc2626}
-.prio-baixa{background:#f0fdf4;color:#16a34a}
-.prio-aguardando{background:#fefce8;color:#ca8a04}
-.prog-bar{height:3px;background:#e2e8f0;border-radius:2px;overflow:hidden;margin-top:7px}
-.prog-fill{height:100%;background:#2ecc52;border-radius:2px;transition:width .3s}
-.prog-text{font-size:10px;color:#94a3b8;margin-top:2px}
+.prio-badge{font-size:9.5px;font-weight:700;padding:0;display:inline-flex;align-items:center;gap:5px;margin-top:2px;margin-bottom:9px;text-transform:uppercase;letter-spacing:.5px;background:none!important;color:inherit}
+.prio-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.prio-alta{color:#dc2626}
+.prio-alta::before{background:#dc2626}
+.prio-baixa{color:#16a34a}
+.prio-baixa::before{background:#16a34a}
+.prio-aguardando{color:#ca8a04}
+.prio-aguardando::before{background:#ca8a04}
+.prog-bar{height:5px;background:#eef1f5;border-radius:3px;overflow:hidden;margin-top:9px}
+.prog-fill{height:100%;background:#2ecc52;border-radius:3px;transition:width .3s}
+.prog-text{font-size:10px;color:#94a3b8;margin-top:4px;font-weight:600}
 .drag-ph{background:#f0f4f8;border:2px dashed #cbd5e1;border-radius:8px;height:56px;margin-bottom:7px}
 .card-form{background:#f8fafc;border-radius:8px;padding:10px 12px;margin-bottom:7px;border:1.5px solid #2ecc52}
 .card-form textarea{width:100%;border:none;outline:none;resize:none;font-size:13px;font-family:inherit;color:#172b4d;min-height:56px;background:transparent}
@@ -941,6 +947,8 @@ function renderBoard() {
 }
 
 function cardHtml(card) {
+  const ICON_CALENDAR = '<svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="6.5" x2="14" y2="6.5" stroke="currentColor" stroke-width="1.3"/><line x1="5" y1="1.5" x2="5" y2="4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="11" y1="1.5" x2="11" y2="4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+  const ICON_CHAT = '<svg viewBox="0 0 16 16" fill="none"><path d="M2 3.5C2 2.67 2.67 2 3.5 2h9C13.33 2 14 2.67 14 3.5v6c0 .83-.67 1.5-1.5 1.5H6l-3 2.5v-2.5H3.5C2.67 11 2 10.33 2 9.5v-6z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>';
   const labels = (card.labels||[]).map(lid => {
     const l = S.labels.find(x=>x.id===lid);
     return l ? `<div class="card-label" style="background:${l.color}" title="${l.name||''}">${esc(l.name||'Etiqueta')}</div>` : '';
@@ -955,11 +963,11 @@ function cardHtml(card) {
   const dueHtml = card.due_date ? (()=>{
     const today = localDateString();
     const cls = card.due_date < today ? 'due-over' : card.due_date === today ? 'due-today' : 'due-ok';
-    return `<span class="card-due ${cls}">📅 ${fmtDate(card.due_date)}</span>`;
+    return `<span class="card-due ${cls}">${ICON_CALENDAR} ${fmtDate(card.due_date)}</span>`;
   })() : '';
   const prioHtml = card.priority ? `<span class="prio-badge prio-${card.priority}">${prioLbl(card.priority)}</span>` : '';
   const commCount = (card.comments||[]).length;
-  const createdHtml = card.created_at ? `<span class="card-badge" title="Criado em">🗓️ ${fmtDate(card.created_at.split('T')[0])}</span>` : '';
+  const createdHtml = card.created_at ? `<span class="card-badge" title="Criado em">${ICON_CALENDAR} ${fmtDate(card.created_at.split('T')[0])}</span>` : '';
   const cardNumHtml = card.card_number ? `<span class="card-num">#${card.card_number}</span>` : '';
   return `<div class="card" id="card-${card.id}" draggable="true"
     ondragstart="onDragStart(event,'${card.id}')"
@@ -973,7 +981,7 @@ function cardHtml(card) {
     <div class="card-meta">
       <div class="card-badges">
         ${createdHtml}
-        ${commCount ? `<span class="card-badge">💬 ${commCount}</span>` : ''}
+        ${commCount ? `<span class="card-badge">${ICON_CHAT} ${commCount}</span>` : ''}
         ${dueHtml}
       </div>
       ${members ? `<div class="card-avatars">${members}</div>` : ''}
