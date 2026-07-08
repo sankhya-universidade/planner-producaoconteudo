@@ -30,7 +30,7 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .app-body{display:flex;align-items:stretch;min-height:calc(100vh - 62px)}
 .sidebar{width:230px;min-width:230px;background:var(--bg-surface);border-right:1px solid var(--border-color3);display:flex;flex-direction:column;padding:14px 10px;transition:width .18s,min-width .18s;position:relative}
 .sidebar.collapsed{width:60px;min-width:60px;padding:14px 8px}
-.sidebar-toggle{align-self:flex-end;background:var(--bg-subtle2);border:none;cursor:pointer;color:var(--text-secondary);font-size:13px;width:24px;height:24px;border-radius:6px;margin-bottom:14px;flex-shrink:0}
+.sidebar-toggle{align-self:flex-end;background:var(--bg-subtle2);border:none;cursor:pointer;color:var(--text-secondary);font-size:13px;width:28px;height:28px;border-radius:7px;margin-bottom:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .sidebar-toggle:hover{background:var(--bg-subtle3);color:var(--text-heading)}
 .sidebar.collapsed .sidebar-toggle{transform:rotate(180deg)}
 .sidebar-section{margin-bottom:18px}
@@ -43,19 +43,22 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .sidebar-board-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;flex-shrink:0}
 .sidebar-board-item.active .sidebar-board-dot{background:#16a34a}
 .sidebar-board-item:not(.active) .sidebar-board-dot{background:var(--border-strong)}
-.sidebar-board-initials{display:none;width:26px;height:26px;border-radius:7px;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;background:var(--bg-subtle2);color:var(--text-secondary)}
+.sidebar-board-initials{display:none;width:28px;height:28px;border-radius:7px;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;background:var(--bg-subtle2);color:var(--text-secondary)}
 .sidebar-board-item.active .sidebar-board-initials{background:var(--bg-tint-green);color:var(--text-heading)}
 .sidebar-board-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;outline:none}
 .sidebar.collapsed .sidebar-board-item{justify-content:center;padding:6px}
 .sidebar.collapsed .sidebar-board-dot{display:none}
 .sidebar.collapsed .sidebar-board-initials{display:flex}
 .sidebar.collapsed .sidebar-board-name,.sidebar.collapsed .sidebar-board-close,.sidebar.collapsed .sidebar-nav-label,.sidebar.collapsed .sidebar-add-board-label{display:none}
+.sidebar.collapsed .sidebar-toggle{align-self:center}
+.sidebar.collapsed .sidebar-nav-item{justify-content:center;padding:0}
+.sidebar.collapsed .sidebar-add-board{gap:0}
 .sidebar-board-close{font-size:11px;color:var(--text-faint);padding:0 2px;border-radius:3px;flex-shrink:0}
 .sidebar-board-close:hover{background:#fee2e2;color:#dc2626}
-.sidebar-add-board{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;border:1.5px dashed var(--border-strong);border-radius:7px;padding:7px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap;overflow:hidden}
+.sidebar-add-board{width:100%;height:34px;display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;border:1.5px dashed var(--border-strong);border-radius:7px;padding:0;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap;overflow:hidden}
 .sidebar-add-board:hover{border-color:#16a34a;color:#16a34a}
 .sidebar-add-board-icon{flex-shrink:0;font-weight:700}
-.sidebar-nav-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:9px;border-radius:7px;cursor:pointer;color:var(--text-secondary);font-size:12.5px;font-weight:600;text-align:left;white-space:nowrap;overflow:hidden}
+.sidebar-nav-item{display:flex;align-items:center;gap:8px;width:100%;height:34px;background:none;border:none;padding:0 9px;border-radius:7px;cursor:pointer;color:var(--text-secondary);font-size:12.5px;font-weight:600;text-align:left;white-space:nowrap;overflow:hidden}
 .sidebar-nav-item:hover{background:var(--bg-subtle2);color:var(--text-heading)}
 .sidebar-nav-item.active{background:#0f1f3d;color:#fff}
 .sidebar-nav-icon{flex-shrink:0}
