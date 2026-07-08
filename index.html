@@ -34,12 +34,14 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .header-title{color:var(--text-heading);font-size:14px;font-weight:700;letter-spacing:.2px;line-height:1.2}
 .header-sub{color:#16a34a;font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
 .header-right{display:flex;align-items:center;gap:10px}
-.tabs-bar{background:var(--bg-surface-alt);padding:0 28px;border-bottom:1px solid var(--border-color3);position:sticky;top:62px;z-index:99;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.filters-bar{display:flex;align-items:center;gap:8px;flex-shrink:0;padding:8px 0}
-.filter-select{background:var(--bg-surface);color:var(--text-secondary);border:1.5px solid var(--border-color2);border-radius:7px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;outline:none;transition:all .15s}
-.filter-select:hover{border-color:var(--border-strong)}
-.filter-select:focus{border-color:#16a34a}
-.filter-select option{background:var(--bg-surface);color:var(--text-secondary)}
+.tabs-bar{background:var(--bg-surface-alt);padding:0 28px;border-bottom:1px solid var(--border-color3);position:sticky;top:62px;z-index:99;display:flex;align-items:center;gap:16px}
+.chips-filter-row{background:var(--bg-surface);padding:10px 28px;border-bottom:1px solid var(--border-color3);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.chips-filter-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.6px;text-transform:uppercase;flex-shrink:0}
+.chip-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.filter-chip{display:flex;align-items:center;gap:6px;background:var(--bg-surface);color:var(--text-secondary);border:1.5px solid var(--border-color2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.filter-chip:hover{border-color:var(--border-strong);color:var(--text-heading)}
+.filter-chip.active{background:#0f1f3d;color:#fff;border-color:#0f1f3d}
+.chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .filter-clear{background:transparent;color:#d97706;border:1.5px solid #fcd34d;border-radius:7px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
 .filter-clear:hover{background:#fffbeb}
 .header-tabs{display:flex;align-items:center;gap:4px;overflow-x:auto;padding:0}
@@ -140,7 +142,8 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .card{background:var(--bg-surface);border-radius:10px;padding:13px 14px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border-color);border-left:3px solid var(--border-color);transition:box-shadow .15s,transform .1s,border-color .15s;position:relative;user-select:none}
 .card:hover{box-shadow:0 4px 16px rgba(0,0,0,.09);transform:translateY(-1px);border-left-color:#2ecc52}
 .card.dragging{opacity:.4;transform:rotate(1.5deg) scale(.97)}
-.card-labels{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
+.card-top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:9px}
+.card-labels{display:flex;flex-wrap:wrap;gap:5px}
 .card-label{font-size:9.5px;font-weight:700;color:#fff;padding:3px 9px;border-radius:5px;letter-spacing:.4px;text-shadow:0 1px 2px rgba(0,0,0,.2);line-height:1.4;text-transform:uppercase}
 .card-num{font-size:10px;font-weight:700;color:var(--text-faint);letter-spacing:.4px;display:block;margin-bottom:4px;font-family:monospace}
 .card-title{font-size:13.5px;color:var(--text-primary);font-weight:600;line-height:1.5;margin-bottom:10px;word-break:break-word}
@@ -156,14 +159,10 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .due-over{background:#fef2f2;color:#dc2626}
 .due-today{background:#fefce8;color:#ca8a04}
 .due-ok{background:#f0fdf4;color:#16a34a}
-.prio-badge{font-size:9.5px;font-weight:700;padding:0;display:inline-flex;align-items:center;gap:5px;margin-top:2px;margin-bottom:9px;text-transform:uppercase;letter-spacing:.5px;background:none!important;color:inherit}
-.prio-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.prio-alta{color:#dc2626}
-.prio-alta::before{background:#dc2626}
-.prio-baixa{color:#16a34a}
-.prio-baixa::before{background:#16a34a}
-.prio-aguardando{color:#ca8a04}
-.prio-aguardando::before{background:#ca8a04}
+.prio-corner{font-size:9px;font-weight:700;padding:3px 9px;border-radius:8px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;flex-shrink:0}
+.prio-alta{color:#dc2626;background:#fef2f2}
+.prio-baixa{color:#16a34a;background:#f0fdf4}
+.prio-aguardando{color:#ca8a04;background:#fefce8}
 .prog-bar{height:5px;background:var(--bg-subtle3);border-radius:3px;overflow:hidden;margin-top:9px}
 .prog-fill{height:100%;background:#2ecc52;border-radius:3px;transition:width .3s}
 .prog-text{font-size:10px;color:var(--text-muted);margin-top:4px;font-weight:600}
@@ -375,18 +374,13 @@ input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
 
 <div class="tabs-bar" id="tabsBar" style="display:none">
   <div class="header-tabs" id="boardTabs"></div>
-  <div class="filters-bar">
-    <select class="filter-select" id="filterMember" onchange="applyFilters()">
-      <option value="">👤 Todos os responsáveis</option>
-    </select>
-    <select class="filter-select" id="filterPriority" onchange="applyFilters()">
-      <option value="">🏳 Todas as prioridades</option>
-      <option value="alta">🔴 Alta prioridade</option>
-      <option value="baixa">🟢 Baixa prioridade</option>
-      <option value="aguardando">🟡 Aguardando aprovação</option>
-    </select>
-    <button class="filter-clear" id="filterClearBtn" onclick="clearFilters()" style="display:none">✕ Limpar filtros</button>
-  </div>
+</div>
+<div class="chips-filter-row" id="chipsFilterRow" style="display:none">
+  <span class="chips-filter-label">PRIORIDADE</span>
+  <div class="chip-group" id="priorityChips"></div>
+  <span class="chips-filter-label">RESPONSÁVEL</span>
+  <div class="chip-group" id="memberChips"></div>
+  <button class="filter-clear" id="filterClearBtn" onclick="clearFilters()" style="display:none">✕ Limpar filtros</button>
 </div>
 
 <div class="board-wrap" id="boardWrap" style="display:none">
@@ -1021,18 +1015,21 @@ function cardHtml(card) {
     const cls = card.due_date < today ? 'due-over' : card.due_date === today ? 'due-today' : 'due-ok';
     return `<span class="card-due ${cls}">${ICON_CALENDAR} ${fmtDateShort(card.due_date)}</span>`;
   })() : '';
-  const prioHtml = card.priority ? `<span class="prio-badge prio-${card.priority}">${prioLbl(card.priority)}</span>` : '';
+  const prioCornerHtml = card.priority ? `<span class="prio-corner prio-${card.priority}">${prioLbl(card.priority)}</span>` : '';
   const commCount = (card.comments||[]).length;
   const createdHtml = card.created_at ? `<span class="card-badge" title="Criado em ${fmtDate(card.created_at.split('T')[0])}">${ICON_CALENDAR} ${fmtDateShort(card.created_at.split('T')[0])}</span>` : '';
   const cardNumHtml = card.card_number ? `<span class="card-num">#${card.card_number}</span>` : '';
+  const topRowHtml = (labels || prioCornerHtml) ? `<div class="card-top-row">
+      <div class="card-labels">${labels}</div>
+      ${prioCornerHtml}
+    </div>` : '';
   return `<div class="card" id="card-${card.id}" draggable="true"
     ondragstart="onDragStart(event,'${card.id}')"
     ondragend="onDragEnd(event)"
     onclick="openCard('${card.id}')">
-    ${labels ? `<div class="card-labels">${labels}</div>` : ''}
+    ${topRowHtml}
     ${cardNumHtml}
     <div class="card-title">${esc(card.title||'Sem título')}</div>
-    ${prioHtml}
     ${chkHtml}
     <div class="card-meta">
       <div class="card-badges">
@@ -2294,29 +2291,57 @@ function matchesFilters(card) {
   return true;
 }
 
+const PRIORITY_CHIPS = [
+  { value: '', label: 'Todas', dot: null },
+  { value: 'alta', label: 'Alta', dot: '#dc2626' },
+  { value: 'baixa', label: 'Baixa', dot: '#16a34a' },
+  { value: 'aguardando', label: 'Aguardando', dot: '#ca8a04' },
+];
+
 function populateFilterOptions() {
-  const sel = document.getElementById('filterMember');
-  if (!sel) return;
-  const currentValue = sel.value;
+  const priorityWrap = document.getElementById('priorityChips');
+  const memberWrap = document.getElementById('memberChips');
+  const filterRow = document.getElementById('chipsFilterRow');
+  if (!priorityWrap || !memberWrap) return;
+
+  filterRow.style.display = '';
+
+  priorityWrap.innerHTML = PRIORITY_CHIPS.map(p => `
+    <button class="filter-chip ${S.filters.priority===p.value?'active':''}" onclick="setPriorityFilter('${p.value}')">
+      ${p.dot ? `<span class="chip-dot" style="background:${p.dot}"></span>` : ''}${p.label}
+    </button>`).join('');
+
   const sorted = Object.entries(S.members).sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
-  sel.innerHTML = '<option value="">👤 Todos os responsáveis</option>' +
-    sorted.map(([uid, m]) => `<option value="${uid}">${esc(m.name)}</option>`).join('');
-  // Preserve the previously selected value if it still exists in the list
-  if (sorted.some(([uid]) => uid === currentValue)) sel.value = currentValue;
+  const memberChipsHtml = [`<button class="filter-chip ${S.filters.member===''?'active':''}" onclick="setMemberFilter('')">Todos</button>`]
+    .concat(sorted.map(([uid, m]) => `
+      <button class="filter-chip ${S.filters.member===uid?'active':''}" onclick="setMemberFilter('${uid}')">
+        <span class="chip-dot" style="background:${m.color||'#94a3b8'}"></span>${esc(m.name)}
+      </button>`));
+  memberWrap.innerHTML = memberChipsHtml.join('');
 }
 
-window.applyFilters = () => {
-  S.filters.member = document.getElementById('filterMember').value;
-  S.filters.priority = document.getElementById('filterPriority').value;
-  const active = !!(S.filters.member || S.filters.priority);
-  document.getElementById('filterClearBtn').style.display = active ? '' : 'none';
+window.setPriorityFilter = (value) => {
+  S.filters.priority = value;
+  populateFilterOptions();
+  updateFilterClearVisibility();
   renderBoard();
 };
 
+window.setMemberFilter = (uid) => {
+  S.filters.member = uid;
+  populateFilterOptions();
+  updateFilterClearVisibility();
+  renderBoard();
+};
+
+function updateFilterClearVisibility() {
+  const active = !!(S.filters.member || S.filters.priority);
+  document.getElementById('filterClearBtn').style.display = active ? '' : 'none';
+}
+
 window.clearFilters = () => {
   S.filters = { member: '', priority: '' };
-  document.getElementById('filterMember').value = '';
-  document.getElementById('filterPriority').value = '';
+  populateFilterOptions();
   document.getElementById('filterClearBtn').style.display = 'none';
   renderBoard();
 };
