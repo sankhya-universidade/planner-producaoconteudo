@@ -15,15 +15,6 @@
   --text-muted:#94a3b8;--text-faint:#b0b8c4;
   color-scheme:light;
 }
-[data-theme="dark"]{
-  --bg-page:#0d1420;--bg-surface:#1a2233;--bg-surface-alt:#151c2b;
-  --bg-subtle:#212a3d;--bg-subtle2:#242e44;--bg-subtle3:#1e2739;
-  --bg-tint-green:#0f2a1c;--bg-tint-green-hover:#123322;
-  --border-color:#2c3549;--border-color2:#2c3549;--border-color3:#2c3549;--border-strong:#3c4762;
-  --text-primary:#dde3ee;--text-heading:#f2f5fa;--text-secondary:#9aa5bd;
-  --text-muted:#7c88a3;--text-faint:#6b7793;
-  color-scheme:dark;
-}
 
 body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min-height:100vh;color:var(--text-primary)}
 .header{background:var(--bg-surface);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border-color3)}
@@ -34,14 +25,54 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .header-title{color:var(--text-heading);font-size:14px;font-weight:700;letter-spacing:.2px;line-height:1.2}
 .header-sub{color:#16a34a;font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
 .header-right{display:flex;align-items:center;gap:10px}
-.tabs-bar{background:var(--bg-surface-alt);padding:0 28px;border-bottom:1px solid var(--border-color3);position:sticky;top:62px;z-index:99;display:flex;align-items:center;gap:16px}
-.chips-filter-row{background:var(--bg-surface);padding:10px 28px;border-bottom:1px solid var(--border-color3);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.chips-filter-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.6px;text-transform:uppercase;flex-shrink:0}
-.chip-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.filter-chip{display:flex;align-items:center;gap:6px;background:var(--bg-surface);color:var(--text-secondary);border:1.5px solid var(--border-color2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
-.filter-chip:hover{border-color:var(--border-strong);color:var(--text-heading)}
-.filter-chip.active{background:#0f1f3d;color:#fff;border-color:#0f1f3d}
-.chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* APP BODY / SIDEBAR LAYOUT */
+.app-body{display:flex;align-items:stretch;min-height:calc(100vh - 62px)}
+.sidebar{width:230px;min-width:230px;background:var(--bg-surface);border-right:1px solid var(--border-color3);display:flex;flex-direction:column;padding:14px 10px;transition:width .18s,min-width .18s;position:relative}
+.sidebar.collapsed{width:60px;min-width:60px;padding:14px 8px}
+.sidebar-toggle{align-self:flex-end;background:var(--bg-subtle2);border:none;cursor:pointer;color:var(--text-secondary);font-size:13px;width:24px;height:24px;border-radius:6px;margin-bottom:14px;flex-shrink:0}
+.sidebar-toggle:hover{background:var(--bg-subtle3);color:var(--text-heading)}
+.sidebar.collapsed .sidebar-toggle{transform:rotate(180deg)}
+.sidebar-section{margin-bottom:18px}
+.sidebar-section-title{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.6px;text-transform:uppercase;padding:0 8px;margin-bottom:8px;white-space:nowrap;overflow:hidden;height:14px}
+.sidebar.collapsed .sidebar-section-title{opacity:0}
+.sidebar-boards{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
+.sidebar-board-item{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:7px;cursor:pointer;color:var(--text-secondary);font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden}
+.sidebar-board-item:hover{background:var(--bg-subtle2);color:var(--text-heading)}
+.sidebar-board-item.active{background:var(--bg-tint-green);color:var(--text-heading)}
+.sidebar-board-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;flex-shrink:0}
+.sidebar-board-item.active .sidebar-board-dot{background:#16a34a}
+.sidebar-board-item:not(.active) .sidebar-board-dot{background:var(--border-strong)}
+.sidebar-board-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;outline:none}
+.sidebar.collapsed .sidebar-board-name,.sidebar.collapsed .sidebar-board-close,.sidebar.collapsed .sidebar-nav-label,.sidebar.collapsed .sidebar-add-board-label{display:none}
+.sidebar-board-close{font-size:11px;color:var(--text-faint);padding:0 2px;border-radius:3px;flex-shrink:0}
+.sidebar-board-close:hover{background:#fee2e2;color:#dc2626}
+.sidebar-add-board{width:100%;background:transparent;border:1.5px dashed var(--border-strong);border-radius:7px;padding:7px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap;overflow:hidden}
+.sidebar-add-board:hover{border-color:#16a34a;color:#16a34a}
+.sidebar-nav-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:9px;border-radius:7px;cursor:pointer;color:var(--text-secondary);font-size:12.5px;font-weight:600;text-align:left;white-space:nowrap;overflow:hidden}
+.sidebar-nav-item:hover{background:var(--bg-subtle2);color:var(--text-heading)}
+.sidebar-nav-item.active{background:#0f1f3d;color:#fff}
+.sidebar-nav-icon{flex-shrink:0}
+.main-content{flex:1;min-width:0;display:flex;flex-direction:column}
+.dashboard-view{padding:24px 28px;overflow-y:auto}
+.dashboard-title{font-size:22px;font-weight:700;color:var(--text-heading);margin-bottom:4px}
+.dashboard-subtitle{font-size:13px;color:var(--text-muted);margin-bottom:22px}
+.dash-kpi-row{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.dash-kpi-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:12px;padding:16px 20px;flex:1;min-width:180px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.dash-kpi-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.dash-kpi-value{font-size:28px;font-weight:700;color:var(--text-heading);line-height:1.2}
+.dash-kpi-note{font-size:11.5px;color:var(--text-muted);margin-top:4px}
+.dash-charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dash-chart-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05);min-height:280px}
+.dash-chart-wide{grid-column:1 / -1}
+.dash-chart-title{font-size:13px;font-weight:700;color:var(--text-heading);margin-bottom:14px}
+.dash-empty{padding:60px 20px;text-align:center;color:var(--text-muted);font-size:13px}
+.tabs-bar{background:var(--bg-surface-alt);padding:0 28px;border-bottom:1px solid var(--border-color3);position:sticky;top:62px;z-index:99;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.filters-bar{display:flex;align-items:center;gap:8px;flex-shrink:0;padding:12px 28px;background:var(--bg-surface-alt);border-bottom:1px solid var(--border-color3)}
+.filter-select{background:var(--bg-surface);color:var(--text-secondary);border:1.5px solid var(--border-color2);border-radius:7px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;outline:none;transition:all .15s}
+.filter-select:hover{border-color:var(--border-strong)}
+.filter-select:focus{border-color:#16a34a}
+.filter-select option{background:var(--bg-surface);color:var(--text-secondary)}
 .filter-clear{background:transparent;color:#d97706;border:1.5px solid #fcd34d;border-radius:7px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
 .filter-clear:hover{background:#fffbeb}
 .header-tabs{display:flex;align-items:center;gap:4px;overflow-x:auto;padding:0}
@@ -74,8 +105,6 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .user-badge{width:34px;height:34px;border-radius:50%;background:#16a34a;color:#0f1f3d;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--bg-surface)}
 
 /* NOTIFICATION BELL */
-.theme-toggle-btn{background:var(--bg-surface);border:1.5px solid var(--border-color2);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .15s}
-.theme-toggle-btn:hover{background:var(--bg-subtle);border-color:var(--border-strong)}
 .bell-wrap{position:relative}
 .bell-btn{background:var(--bg-surface);border:1.5px solid var(--border-color2);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .15s;position:relative}
 .bell-btn:hover{background:var(--bg-subtle);border-color:var(--border-strong)}
@@ -283,14 +312,6 @@ input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading{display:flex;align-items:center;justify-content:center;height:200px;color:var(--text-muted);font-size:14px;gap:10px}
 </style>
-<script>
-(function(){
-  try {
-    var saved = localStorage.getItem('theme_preference');
-    if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-  } catch(e) {}
-})();
-</script>
 </head>
 <body>
 
@@ -352,7 +373,6 @@ input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
     </div>
     <button class="btn-export" onclick="exportExcel()">⬇ Exportar Excel</button>
     <button class="btn-new" onclick="openNewCardGlobal()">＋ Novo Card</button>
-    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌙</button>
     <div class="bell-wrap">
       <button class="bell-btn" onclick="toggleNotifPanel()" title="Notificações">
         🔔
@@ -372,20 +392,41 @@ input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
   </div>
 </div>
 
-<div class="tabs-bar" id="tabsBar" style="display:none">
-  <div class="header-tabs" id="boardTabs"></div>
-</div>
-<div class="chips-filter-row" id="chipsFilterRow" style="display:none">
-  <span class="chips-filter-label">PRIORIDADE</span>
-  <div class="chip-group" id="priorityChips"></div>
-  <span class="chips-filter-label">RESPONSÁVEL</span>
-  <div class="chip-group" id="memberChips"></div>
-  <button class="filter-clear" id="filterClearBtn" onclick="clearFilters()" style="display:none">✕ Limpar filtros</button>
-</div>
+<div class="app-body" id="appBody" style="display:none">
+  <div class="sidebar" id="appSidebar">
+    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Recolher/expandir menu">◂</button>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Painéis</div>
+      <div class="sidebar-boards" id="sidebarBoards"></div>
+      <button class="sidebar-add-board" onclick="addBoard()" title="Nova aba">＋ Nova aba</button>
+    </div>
+    <div class="sidebar-section">
+      <button class="sidebar-nav-item" id="dashboardNavItem" onclick="showDashboardView()" title="Dashboard">
+        <span class="sidebar-nav-icon">📊</span><span class="sidebar-nav-label">Dashboard</span>
+      </button>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="filters-bar" id="filtersBar">
+      <select class="filter-select" id="filterMember" onchange="applyFilters()">
+        <option value="">👤 Todos os responsáveis</option>
+      </select>
+      <select class="filter-select" id="filterPriority" onchange="applyFilters()">
+        <option value="">🏳 Todas as prioridades</option>
+        <option value="alta">🔴 Alta prioridade</option>
+        <option value="baixa">🟢 Baixa prioridade</option>
+        <option value="aguardando">🟡 Aguardando aprovação</option>
+      </select>
+      <button class="filter-clear" id="filterClearBtn" onclick="clearFilters()" style="display:none">✕ Limpar filtros</button>
+    </div>
 
-<div class="board-wrap" id="boardWrap" style="display:none">
-  <div class="board" id="board">
-    <div class="loading"><div class="spinner"></div> Carregando...</div>
+    <div class="board-wrap" id="boardWrap">
+      <div class="board" id="board">
+        <div class="loading"><div class="spinner"></div> Carregando...</div>
+      </div>
+    </div>
+
+    <div class="dashboard-view" id="dashboardView" style="display:none"></div>
   </div>
 </div>
 
@@ -462,6 +503,7 @@ input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
 <div class="toast-wrap" id="toastWrap"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
 
 
@@ -486,6 +528,7 @@ const S = {
   profile: null,
   boards: [],
   currentBoard: null,
+  currentView: 'board',
   columns: [],
   cards: [],
   members: {},
@@ -673,37 +716,13 @@ async function loadProfile() {
 // ═══════════════════════════════════════════
 // SHOW APP
 // ═══════════════════════════════════════════
-// ═══════════════════════════════════════════
-// LIGHT / DARK THEME
-// ═══════════════════════════════════════════
-function applyTheme(theme) {
-  if (theme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-  } else {
-    document.documentElement.removeAttribute('data-theme');
-  }
-  const btn = document.getElementById('themeToggleBtn');
-  if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
-  try { localStorage.setItem('theme_preference', theme); } catch(e) {}
-}
-
-window.toggleTheme = () => {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  applyTheme(isDark ? 'light' : 'dark');
-};
-
-function syncThemeIcon() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const btn = document.getElementById('themeToggleBtn');
-  if (btn) btn.textContent = isDark ? '☀️' : '🌙';
-}
 
 async function showApp() {
   document.getElementById('authOverlay').style.display = 'none';
   document.getElementById('mainHeader').style.display = '';
-  document.getElementById('tabsBar').style.display = '';
+  document.getElementById('appBody').style.display = 'flex';
   document.getElementById('boardWrap').style.display = '';
-  syncThemeIcon();
+  restoreSidebarState();
   const name = S.profile?.name || S.user.email;
   document.getElementById('userName').textContent = name;
   document.getElementById('userBadge').textContent = initials(name);
@@ -756,24 +775,68 @@ async function loadBoardsList() {
 }
 
 function renderTabs() {
-  const wrap = document.getElementById('boardTabs');
+  const wrap = document.getElementById('sidebarBoards');
   if (!wrap) return;
+  const inDashboard = S.currentView === 'dashboard';
   wrap.innerHTML = S.boards.map(b => {
-    const isActive = b.id === S.currentBoard;
+    const isActive = b.id === S.currentBoard && !inDashboard;
     const editableAttr = isActive
       ? `contenteditable="true" onblur="saveBoardTitle('${b.id}', this.textContent.trim())" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"`
       : '';
     return `
-    <div class="board-tab ${isActive ? 'active' : ''}" onmousedown="switchBoard('${b.id}')">
-      <span class="tab-title" ${editableAttr}>${esc(b.title)}</span>
-      ${S.boards.length > 1 ? `<span class="tab-close" onmousedown="event.stopPropagation();deleteBoardPrompt('${b.id}')">✕</span>` : ''}
+    <div class="sidebar-board-item ${isActive ? 'active' : ''}" onmousedown="switchBoard('${b.id}')" title="${esc(b.title)}">
+      <span class="sidebar-board-dot"></span>
+      <span class="sidebar-board-name" ${editableAttr}>${esc(b.title)}</span>
+      ${S.boards.length > 1 ? `<span class="sidebar-board-close" onmousedown="event.stopPropagation();deleteBoardPrompt('${b.id}')">✕</span>` : ''}
     </div>`;
-  }).join('') + `<button class="board-tab-add" onclick="addBoard()">＋</button>`;
+  }).join('');
+  const dashBtn = document.getElementById('dashboardNavItem');
+  if (dashBtn) dashBtn.classList.toggle('active', inDashboard);
 }
+
+// ═══════════════════════════════════════════
+// SIDEBAR TOGGLE & VIEW NAVIGATION
+// ═══════════════════════════════════════════
+window.toggleSidebar = () => {
+  const sidebar = document.getElementById('appSidebar');
+  const isCollapsed = sidebar.classList.toggle('collapsed');
+  try { localStorage.setItem('sidebar_collapsed', isCollapsed ? '1' : '0'); } catch(e) {}
+};
+
+function restoreSidebarState() {
+  try {
+    const collapsed = localStorage.getItem('sidebar_collapsed') === '1';
+    document.getElementById('appSidebar').classList.toggle('collapsed', collapsed);
+  } catch(e) {}
+}
+
+function showBoardViewUI() {
+  document.getElementById('filtersBar').style.display = '';
+  document.getElementById('boardWrap').style.display = '';
+  document.getElementById('dashboardView').style.display = 'none';
+}
+
+window.showDashboardView = async () => {
+  S.currentView = 'dashboard';
+  document.getElementById('filtersBar').style.display = 'none';
+  document.getElementById('boardWrap').style.display = 'none';
+  document.getElementById('dashboardView').style.display = '';
+  renderTabs();
+  await loadDashboard();
+};
 
 window.switchBoard = async (boardId) => {
   console.log('[switchBoard] CLICKED at', performance.now().toFixed(0)+'ms', boardId);
-  if (boardId === S.currentBoard) return;
+  const wasInDashboard = S.currentView === 'dashboard';
+  if (boardId === S.currentBoard && !wasInDashboard) return;
+
+  S.currentView = 'board';
+  showBoardViewUI();
+
+  if (boardId === S.currentBoard && wasInDashboard) {
+    renderTabs();
+    return;
+  }
 
   // Request-token pattern: each call gets a unique token. Only the LATEST
   // call is allowed to update the UI when it finishes — older in-flight
@@ -1099,12 +1162,19 @@ window.onDrop = (e, colId) => {
   const after = getAfterEl(container, e.clientY);
   const newOrd = after ? visibleCards.indexOf(after) : visibleCards.length;
 
+  // Determine if the destination column is a "final" (Concluído-type) column,
+  // to track completed_at for the Dashboard's on-time completion metric.
+  const targetCol = S.columns.find(c => c.id === colId);
+  const isFinalColumn = !!(targetCol && targetCol.color === 'concluido');
+  const completedAtValue = isFinalColumn ? new Date().toISOString() : null;
+
   // ── OPTIMISTIC UPDATE: move card in local state immediately ──
   const cardIdx = S.cards.findIndex(c => c.id === cardId);
   if (cardIdx === -1) return;
 
   // Update column and order in local state
   S.cards[cardIdx].column_id = colId;
+  S.cards[cardIdx].completed_at = completedAtValue;
 
   // Recompute orders for affected column
   const colCards = S.cards
@@ -1119,7 +1189,7 @@ window.onDrop = (e, colId) => {
   // ── BACKGROUND SYNC to Supabase ──
   (async () => {
     try {
-      const mainUpdate = await S.supabase.from('cards').update({ column_id: colId, ord: newOrd, overdue_notified: false }).eq('id', cardId);
+      const mainUpdate = await S.supabase.from('cards').update({ column_id: colId, ord: newOrd, overdue_notified: false, completed_at: completedAtValue }).eq('id', cardId);
       if (mainUpdate.error) throw mainUpdate.error;
       // Silently reorder all cards in column
       const updates = colCards.map((c,i) =>
@@ -1173,9 +1243,12 @@ window.createCard = async (colId, title) => {
   title = (title||'').trim();
   if (!title) return;
   const ord = S.cards.filter(c=>c.column_id===colId).length;
+  const targetCol = S.columns.find(c => c.id === colId);
+  const isFinalColumn = !!(targetCol && targetCol.color === 'concluido');
   const { data, error } = await S.supabase.from('cards').insert({
     title, column_id: colId, ord, created_by: S.user.id,
     created_at: new Date().toISOString(),
+    completed_at: isFinalColumn ? new Date().toISOString() : null,
     board_id: S.currentBoard,
     labels: [], members: [], checklist: [], comments: []
   }).select();
@@ -1714,6 +1787,171 @@ function closeDD() { document.getElementById('activeDD')?.remove(); }
 // ═══════════════════════════════════════════
 // NOTIFICATIONS (menções @ e cards vencidos)
 // ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════
+S._dashCharts = {};
+
+async function loadDashboard() {
+  const container = document.getElementById('dashboardView');
+  container.innerHTML = `
+    <h2 class="dashboard-title">Dashboard</h2>
+    <p class="dashboard-subtitle">Desempenho geral — todas as abas, agrupado por responsável e prioridade</p>
+    <div class="loading"><div class="spinner"></div> Carregando dados...</div>
+  `;
+
+  // Fetch cards and columns across ALL boards (dashboard scope = whole team,
+  // independent of which aba the card is in, per explicit requirement).
+  const [cardsRes, columnsRes] = await Promise.all([
+    S.supabase.from('cards').select('*'),
+    S.supabase.from('columns').select('id,color,board_id'),
+  ]);
+
+  if (cardsRes.error) { container.innerHTML = `<div class="dash-empty">Erro ao carregar dados: ${esc(cardsRes.error.message)}</div>`; return; }
+  if (columnsRes.error) { container.innerHTML = `<div class="dash-empty">Erro ao carregar dados: ${esc(columnsRes.error.message)}</div>`; return; }
+
+  const allCards = cardsRes.data || [];
+  const allColumns = columnsRes.data || [];
+  const colorByColId = {};
+  allColumns.forEach(c => { colorByColId[c.id] = c.color; });
+
+  if (!allCards.length) {
+    container.innerHTML = `<h2 class="dashboard-title">Dashboard</h2><div class="dash-empty">Nenhum card encontrado ainda. Crie alguns cards para ver o desempenho aqui.</div>`;
+    return;
+  }
+
+  // ── KPI: totals ──
+  const totalCards = allCards.length;
+  const finalColIds = new Set(allColumns.filter(c => c.color === 'concluido').map(c => c.id));
+  const completedCards = allCards.filter(c => finalColIds.has(c.column_id));
+
+  // ── KPI: on-time completion rate ──
+  // "No prazo" = chegou na coluna final (completed_at) até a data de entrega (due_date).
+  // Cards concluídos sem completed_at registrado (dados anteriores a esta funcionalidade)
+  // não podem ser avaliados e entram como "não rastreado".
+  let onTime = 0, late = 0, untracked = 0;
+  completedCards.forEach(c => {
+    if (!c.due_date) return; // no due date to compare against — skip entirely
+    if (!c.completed_at) { untracked++; return; }
+    const completedDate = c.completed_at.split('T')[0];
+    if (completedDate <= c.due_date) onTime++; else late++;
+  });
+  const trackedTotal = onTime + late;
+  const onTimePct = trackedTotal > 0 ? Math.round((onTime/trackedTotal)*100) : null;
+
+  // ── By stage (column color category) ──
+  const stageLabels = { afazer:'A fazer', andamento:'Em andamento', revisao:'Em revisão', aprovacao:'Aprovação/Validação', concluido:'Concluído', custom:'Outras' };
+  const stageCounts = {};
+  allCards.forEach(c => {
+    const color = colorByColId[c.column_id] || 'custom';
+    const label = stageLabels[color] || 'Outras';
+    stageCounts[label] = (stageCounts[label]||0) + 1;
+  });
+
+  // ── By priority ──
+  const prioLabels = { alta:'Alta prioridade', baixa:'Baixa prioridade', aguardando:'Aguardando aprovação', '': 'Sem prioridade' };
+  const prioCounts = {};
+  allCards.forEach(c => {
+    const label = prioLabels[c.priority || ''] || 'Sem prioridade';
+    prioCounts[label] = (prioCounts[label]||0) + 1;
+  });
+
+  // ── By user (a card with multiple responsibles counts for each) ──
+  const userCounts = {};
+  const userCompleted = {};
+  allCards.forEach(c => {
+    (c.members||[]).forEach(uid => {
+      const name = S.members[uid]?.name || 'Desconhecido';
+      userCounts[name] = (userCounts[name]||0) + 1;
+      if (finalColIds.has(c.column_id)) userCompleted[name] = (userCompleted[name]||0) + 1;
+    });
+  });
+  const userNames = Object.keys(userCounts).sort((a,b) => userCounts[b]-userCounts[a]);
+
+  // ── Render layout ──
+  container.innerHTML = `
+    <h2 class="dashboard-title">Dashboard</h2>
+    <p class="dashboard-subtitle">Desempenho geral — todas as abas, agrupado por responsável e prioridade</p>
+    <div class="dash-kpi-row">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Total de Cards</div>
+        <div class="dash-kpi-value">${totalCards}</div>
+      </div>
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Concluídos</div>
+        <div class="dash-kpi-value">${completedCards.length}</div>
+        <div class="dash-kpi-note">${totalCards ? Math.round(completedCards.length/totalCards*100) : 0}% do total</div>
+      </div>
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Concluído no Prazo</div>
+        <div class="dash-kpi-value">${onTimePct === null ? '—' : onTimePct+'%'}</div>
+        <div class="dash-kpi-note">${trackedTotal} avaliados${untracked ? ` · ${untracked} não rastreados (concluídos antes desta métrica existir)` : ''}</div>
+      </div>
+    </div>
+    <div class="dash-charts-grid">
+      <div class="dash-chart-card">
+        <div class="dash-chart-title">Desempenho por Etapa</div>
+        <canvas id="chartByStage"></canvas>
+      </div>
+      <div class="dash-chart-card">
+        <div class="dash-chart-title">Desempenho por Prioridade</div>
+        <canvas id="chartByPriority"></canvas>
+      </div>
+      <div class="dash-chart-card dash-chart-wide">
+        <div class="dash-chart-title">Desempenho por Responsável (total vs. concluídos)</div>
+        <canvas id="chartByUser"></canvas>
+      </div>
+    </div>
+  `;
+
+  renderDashboardCharts(stageCounts, prioCounts, userNames, userCounts, userCompleted);
+}
+
+function renderDashboardCharts(stageCounts, prioCounts, userNames, userCounts, userCompleted) {
+  // Destroy any previously rendered charts to avoid duplicate-canvas errors
+  Object.values(S._dashCharts).forEach(ch => { try { ch.destroy(); } catch(e) {} });
+  S._dashCharts = {};
+
+  const stageColors = { 'A fazer':'#94a3b8', 'Em andamento':'#2ecc52', 'Em revisão':'#f59e0b', 'Aprovação/Validação':'#8b5cf6', 'Concluído':'#0f1f3d', 'Outras':'#cbd5e1' };
+  const stageLabelsArr = Object.keys(stageCounts);
+  S._dashCharts.stage = new Chart(document.getElementById('chartByStage'), {
+    type: 'doughnut',
+    data: {
+      labels: stageLabelsArr,
+      datasets: [{ data: stageLabelsArr.map(l => stageCounts[l]), backgroundColor: stageLabelsArr.map(l => stageColors[l] || '#cbd5e1') }]
+    },
+    options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, font:{size:11} } } } }
+  });
+
+  const prioColors = { 'Alta prioridade':'#dc2626', 'Baixa prioridade':'#16a34a', 'Aguardando aprovação':'#ca8a04', 'Sem prioridade':'#cbd5e1' };
+  const prioLabelsArr = Object.keys(prioCounts);
+  S._dashCharts.priority = new Chart(document.getElementById('chartByPriority'), {
+    type: 'doughnut',
+    data: {
+      labels: prioLabelsArr,
+      datasets: [{ data: prioLabelsArr.map(l => prioCounts[l]), backgroundColor: prioLabelsArr.map(l => prioColors[l] || '#cbd5e1') }]
+    },
+    options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, font:{size:11} } } } }
+  });
+
+  S._dashCharts.user = new Chart(document.getElementById('chartByUser'), {
+    type: 'bar',
+    data: {
+      labels: userNames,
+      datasets: [
+        { label: 'Total de cards', data: userNames.map(n => userCounts[n]), backgroundColor: '#94a3b8' },
+        { label: 'Concluídos', data: userNames.map(n => userCompleted[n]||0), backgroundColor: '#16a34a' },
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }
+    }
+  });
+}
+
 
 async function checkOverdueCards() {
   // Client-side overdue detection: runs whenever board data loads and on a
@@ -2291,57 +2529,29 @@ function matchesFilters(card) {
   return true;
 }
 
-const PRIORITY_CHIPS = [
-  { value: '', label: 'Todas', dot: null },
-  { value: 'alta', label: 'Alta', dot: '#dc2626' },
-  { value: 'baixa', label: 'Baixa', dot: '#16a34a' },
-  { value: 'aguardando', label: 'Aguardando', dot: '#ca8a04' },
-];
-
 function populateFilterOptions() {
-  const priorityWrap = document.getElementById('priorityChips');
-  const memberWrap = document.getElementById('memberChips');
-  const filterRow = document.getElementById('chipsFilterRow');
-  if (!priorityWrap || !memberWrap) return;
-
-  filterRow.style.display = '';
-
-  priorityWrap.innerHTML = PRIORITY_CHIPS.map(p => `
-    <button class="filter-chip ${S.filters.priority===p.value?'active':''}" onclick="setPriorityFilter('${p.value}')">
-      ${p.dot ? `<span class="chip-dot" style="background:${p.dot}"></span>` : ''}${p.label}
-    </button>`).join('');
-
+  const sel = document.getElementById('filterMember');
+  if (!sel) return;
+  const currentValue = sel.value;
   const sorted = Object.entries(S.members).sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
-  const memberChipsHtml = [`<button class="filter-chip ${S.filters.member===''?'active':''}" onclick="setMemberFilter('')">Todos</button>`]
-    .concat(sorted.map(([uid, m]) => `
-      <button class="filter-chip ${S.filters.member===uid?'active':''}" onclick="setMemberFilter('${uid}')">
-        <span class="chip-dot" style="background:${m.color||'#94a3b8'}"></span>${esc(m.name)}
-      </button>`));
-  memberWrap.innerHTML = memberChipsHtml.join('');
+  sel.innerHTML = '<option value="">👤 Todos os responsáveis</option>' +
+    sorted.map(([uid, m]) => `<option value="${uid}">${esc(m.name)}</option>`).join('');
+  // Preserve the previously selected value if it still exists in the list
+  if (sorted.some(([uid]) => uid === currentValue)) sel.value = currentValue;
 }
 
-window.setPriorityFilter = (value) => {
-  S.filters.priority = value;
-  populateFilterOptions();
-  updateFilterClearVisibility();
-  renderBoard();
-};
-
-window.setMemberFilter = (uid) => {
-  S.filters.member = uid;
-  populateFilterOptions();
-  updateFilterClearVisibility();
-  renderBoard();
-};
-
-function updateFilterClearVisibility() {
+window.applyFilters = () => {
+  S.filters.member = document.getElementById('filterMember').value;
+  S.filters.priority = document.getElementById('filterPriority').value;
   const active = !!(S.filters.member || S.filters.priority);
   document.getElementById('filterClearBtn').style.display = active ? '' : 'none';
-}
+  renderBoard();
+};
 
 window.clearFilters = () => {
   S.filters = { member: '', priority: '' };
-  populateFilterOptions();
+  document.getElementById('filterMember').value = '';
+  document.getElementById('filterPriority').value = '';
   document.getElementById('filterClearBtn').style.display = 'none';
   renderBoard();
 };
