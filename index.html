@@ -43,12 +43,18 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .sidebar-board-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;flex-shrink:0}
 .sidebar-board-item.active .sidebar-board-dot{background:#16a34a}
 .sidebar-board-item:not(.active) .sidebar-board-dot{background:var(--border-strong)}
+.sidebar-board-initials{display:none;width:26px;height:26px;border-radius:7px;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;background:var(--bg-subtle2);color:var(--text-secondary)}
+.sidebar-board-item.active .sidebar-board-initials{background:var(--bg-tint-green);color:var(--text-heading)}
 .sidebar-board-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;outline:none}
+.sidebar.collapsed .sidebar-board-item{justify-content:center;padding:6px}
+.sidebar.collapsed .sidebar-board-dot{display:none}
+.sidebar.collapsed .sidebar-board-initials{display:flex}
 .sidebar.collapsed .sidebar-board-name,.sidebar.collapsed .sidebar-board-close,.sidebar.collapsed .sidebar-nav-label,.sidebar.collapsed .sidebar-add-board-label{display:none}
 .sidebar-board-close{font-size:11px;color:var(--text-faint);padding:0 2px;border-radius:3px;flex-shrink:0}
 .sidebar-board-close:hover{background:#fee2e2;color:#dc2626}
-.sidebar-add-board{width:100%;background:transparent;border:1.5px dashed var(--border-strong);border-radius:7px;padding:7px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap;overflow:hidden}
+.sidebar-add-board{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;border:1.5px dashed var(--border-strong);border-radius:7px;padding:7px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap;overflow:hidden}
 .sidebar-add-board:hover{border-color:#16a34a;color:#16a34a}
+.sidebar-add-board-icon{flex-shrink:0;font-weight:700}
 .sidebar-nav-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:9px;border-radius:7px;cursor:pointer;color:var(--text-secondary);font-size:12.5px;font-weight:600;text-align:left;white-space:nowrap;overflow:hidden}
 .sidebar-nav-item:hover{background:var(--bg-subtle2);color:var(--text-heading)}
 .sidebar-nav-item.active{background:#0f1f3d;color:#fff}
@@ -398,7 +404,9 @@ input[type=date].mdate:focus,select.msel:focus{border-color:#2ecc52}
     <div class="sidebar-section">
       <div class="sidebar-section-title">Painéis</div>
       <div class="sidebar-boards" id="sidebarBoards"></div>
-      <button class="sidebar-add-board" onclick="addBoard()" title="Nova aba">＋ Nova aba</button>
+      <button class="sidebar-add-board" onclick="addBoard()" title="Nova aba">
+        <span class="sidebar-add-board-icon">＋</span><span class="sidebar-add-board-label">Nova aba</span>
+      </button>
     </div>
     <div class="sidebar-section">
       <button class="sidebar-nav-item" id="dashboardNavItem" onclick="showDashboardView()" title="Dashboard">
@@ -786,6 +794,7 @@ function renderTabs() {
     return `
     <div class="sidebar-board-item ${isActive ? 'active' : ''}" onmousedown="switchBoard('${b.id}')" title="${esc(b.title)}">
       <span class="sidebar-board-dot"></span>
+      <span class="sidebar-board-initials">${boardInitials(b.title)}</span>
       <span class="sidebar-board-name" ${editableAttr}>${esc(b.title)}</span>
       ${S.boards.length > 1 ? `<span class="sidebar-board-close" onmousedown="event.stopPropagation();deleteBoardPrompt('${b.id}')">✕</span>` : ''}
     </div>`;
@@ -2243,6 +2252,12 @@ function initials(name) {
   if (!name) return '?';
   const p = name.trim().split(' ');
   return (p[0][0]+(p[1]?.[0]||'')).toUpperCase();
+}
+function boardInitials(title) {
+  const words = (title||'').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return '?';
+  if (words.length === 1) return words[0].slice(0,2).toUpperCase();
+  return (words[0][0] + words[words.length-1][0]).toUpperCase();
 }
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
