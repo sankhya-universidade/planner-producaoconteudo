@@ -74,6 +74,12 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .dash-charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .dash-chart-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05);height:300px;display:flex;flex-direction:column}
 .dash-chart-card canvas{flex:1;min-height:0}
+.dash-donut-wrap{position:relative;flex:1;min-height:0;aspect-ratio:1/1;max-width:100%;max-height:100%;margin:0 auto}
+.dash-donut-wrap canvas{position:absolute;inset:0;width:100% !important;height:100% !important}
+.dash-filter-item{display:flex;align-items:center;gap:8px}
+.dash-filter-select{background:var(--bg-surface);color:var(--text-secondary);border:1.5px solid var(--border-color2);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;max-width:220px}
+.dash-filter-select:hover{border-color:var(--border-strong)}
+.dash-filter-select:focus{outline:none;border-color:#0f1f3d}
 .chips-filter-row{background:var(--bg-surface);padding:10px 28px;border-bottom:1px solid var(--border-color3);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .chips-filter-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.6px;text-transform:uppercase;flex-shrink:0}
 .chip-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -1863,33 +1869,33 @@ function renderDashboardContent() {
     return true;
   });
 
-  // ── Filter chips HTML ──
-  const boardChips = [`<button class="filter-chip ${f.board===''?'active':''}" onclick="setDashFilter('board','')">Todas</button>`]
-    .concat(S.boards.map(b => `<button class="filter-chip ${f.board===b.id?'active':''}" onclick="setDashFilter('board','${b.id}')">${esc(b.title)}</button>`)).join('');
+  // ── Filter dropdowns HTML ──
+  const boardOptions = [`<option value="" ${f.board===''?'selected':''}>Todas</option>`]
+    .concat(S.boards.map(b => `<option value="${b.id}" ${f.board===b.id?'selected':''}>${esc(b.title)}</option>`)).join('');
 
-  const prioChipsDef = [['','Todas',null],['alta','Alta','#dc2626'],['baixa','Baixa','#16a34a'],['aguardando','Aguardando','#ca8a04']];
-  const prioChips = prioChipsDef.map(([val,label,dot]) => `
-    <button class="filter-chip ${f.priority===val?'active':''}" onclick="setDashFilter('priority','${val}')">
-      ${dot ? `<span class="chip-dot" style="background:${dot}"></span>` : ''}${label}
-    </button>`).join('');
+  const prioOptionsDef = [['','Todas'],['alta','🔴 Alta'],['baixa','🟢 Baixa'],['aguardando','🟡 Aguardando']];
+  const prioOptions = prioOptionsDef.map(([val,label]) => `<option value="${val}" ${f.priority===val?'selected':''}>${label}</option>`).join('');
 
   const sortedMembers = Object.entries(S.members).sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
-  const memberChips = [`<button class="filter-chip ${f.member===''?'active':''}" onclick="setDashFilter('member','')">Todos</button>`]
-    .concat(sortedMembers.map(([uid,m]) => `
-      <button class="filter-chip ${f.member===uid?'active':''}" onclick="setDashFilter('member','${uid}')">
-        <span class="chip-dot" style="background:${m.color||'#94a3b8'}"></span>${esc(m.name)}
-      </button>`)).join('');
+  const memberOptions = [`<option value="" ${f.member===''?'selected':''}>Todos</option>`]
+    .concat(sortedMembers.map(([uid,m]) => `<option value="${uid}" ${f.member===uid?'selected':''}>${esc(m.name)}</option>`)).join('');
 
   const anyFilterActive = !!(f.board || f.member || f.priority);
 
   const filtersHtml = `
     <div class="chips-filter-row" style="padding:0;border:none;background:none;margin-bottom:20px">
-      <span class="chips-filter-label">ABA</span>
-      <div class="chip-group">${boardChips}</div>
-      <span class="chips-filter-label">PRIORIDADE</span>
-      <div class="chip-group">${prioChips}</div>
-      <span class="chips-filter-label">RESPONSÁVEL</span>
-      <div class="chip-group">${memberChips}</div>
+      <div class="dash-filter-item">
+        <span class="chips-filter-label">ABA</span>
+        <select class="dash-filter-select" onchange="setDashFilter('board', this.value)">${boardOptions}</select>
+      </div>
+      <div class="dash-filter-item">
+        <span class="chips-filter-label">PRIORIDADE</span>
+        <select class="dash-filter-select" onchange="setDashFilter('priority', this.value)">${prioOptions}</select>
+      </div>
+      <div class="dash-filter-item">
+        <span class="chips-filter-label">RESPONSÁVEL</span>
+        <select class="dash-filter-select" onchange="setDashFilter('member', this.value)">${memberOptions}</select>
+      </div>
       ${anyFilterActive ? `<button class="filter-clear" onclick="clearDashFilters()">✕ Limpar filtros</button>` : ''}
     </div>
   `;
@@ -1972,11 +1978,11 @@ function renderDashboardContent() {
     <div class="dash-charts-grid">
       <div class="dash-chart-card">
         <div class="dash-chart-title">Desempenho por Etapa</div>
-        <canvas id="chartByStage"></canvas>
+        <div class="dash-donut-wrap"><canvas id="chartByStage"></canvas></div>
       </div>
       <div class="dash-chart-card">
         <div class="dash-chart-title">Desempenho por Prioridade</div>
-        <canvas id="chartByPriority"></canvas>
+        <div class="dash-donut-wrap"><canvas id="chartByPriority"></canvas></div>
       </div>
       <div class="dash-chart-card dash-chart-wide">
         <div class="dash-chart-title">Desempenho por Responsável (total vs. concluídos)</div>
