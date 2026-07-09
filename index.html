@@ -72,7 +72,15 @@ body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg-page);min
 .dash-kpi-value{font-size:28px;font-weight:700;color:var(--text-heading);line-height:1.2}
 .dash-kpi-note{font-size:11.5px;color:var(--text-muted);margin-top:4px}
 .dash-charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.dash-chart-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05);min-height:280px}
+.dash-chart-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05);height:300px;display:flex;flex-direction:column}
+.dash-chart-card canvas{flex:1;min-height:0}
+.chips-filter-row{background:var(--bg-surface);padding:10px 28px;border-bottom:1px solid var(--border-color3);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.chips-filter-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.6px;text-transform:uppercase;flex-shrink:0}
+.chip-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.filter-chip{display:flex;align-items:center;gap:6px;background:var(--bg-surface);color:var(--text-secondary);border:1.5px solid var(--border-color2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.filter-chip:hover{border-color:var(--border-strong);color:var(--text-heading)}
+.filter-chip.active{background:#0f1f3d;color:#fff;border-color:#0f1f3d}
+.chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .dash-chart-wide{grid-column:1 / -1}
 .dash-chart-title{font-size:13px;font-weight:700;color:var(--text-heading);margin-bottom:14px}
 .dash-empty{padding:60px 20px;text-align:center;color:var(--text-muted);font-size:13px}
@@ -1991,7 +1999,7 @@ function renderDashboardCharts(stageCounts, prioCounts, userNames, userCounts, u
       labels: stageLabelsArr,
       datasets: [{ data: stageLabelsArr.map(l => stageCounts[l]), backgroundColor: stageLabelsArr.map(l => stageColors[l] || '#cbd5e1') }]
     },
-    options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, font:{size:11} } } } }
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, font:{size:11} } } } }
   });
 
   const prioColors = { 'Alta prioridade':'#dc2626', 'Baixa prioridade':'#16a34a', 'Aguardando aprovação':'#ca8a04', 'Sem prioridade':'#cbd5e1' };
@@ -2002,7 +2010,7 @@ function renderDashboardCharts(stageCounts, prioCounts, userNames, userCounts, u
       labels: prioLabelsArr,
       datasets: [{ data: prioLabelsArr.map(l => prioCounts[l]), backgroundColor: prioLabelsArr.map(l => prioColors[l] || '#cbd5e1') }]
     },
-    options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, font:{size:11} } } } }
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, font:{size:11} } } } }
   });
 
   S._dashCharts.user = new Chart(document.getElementById('chartByUser'), {
@@ -2016,6 +2024,7 @@ function renderDashboardCharts(stageCounts, prioCounts, userNames, userCounts, u
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
       plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }
     }
