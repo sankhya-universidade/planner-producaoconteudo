@@ -1095,7 +1095,9 @@ function cardHtml(card) {
   const chkHtml = checks.length ? `<div class="prog-bar"><div class="prog-fill" style="width:${Math.round(done/checks.length*100)}%"></div></div><div class="prog-text">${done}/${checks.length}</div>` : '';
   const dueHtml = card.due_date ? (()=>{
     const today = localDateString();
-    const cls = card.due_date < today ? 'due-over' : card.due_date === today ? 'due-today' : 'due-ok';
+    const cardCol = (S.columns||[]).find(c => c.id === card.column_id);
+    const isDone = !!card.completed_at || (cardCol && cardCol.color === 'concluido');
+    const cls = isDone ? 'due-ok' : (card.due_date < today ? 'due-over' : card.due_date === today ? 'due-today' : 'due-ok');
     return `<span class="card-due ${cls}">${ICON_CALENDAR} ${fmtDateShort(card.due_date)}</span>`;
   })() : '';
   const prioCornerHtml = card.priority ? `<span class="prio-corner prio-${card.priority}">${prioLbl(card.priority)}</span>` : '';
