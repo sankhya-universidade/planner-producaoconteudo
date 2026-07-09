@@ -1804,6 +1804,8 @@ function closeDD() { document.getElementById('activeDD')?.remove(); }
 // DASHBOARD
 // ═══════════════════════════════════════════
 S._dashCharts = {};
+S._dashRaw = null;
+S.dashFilters = { board: '', member: '', priority: '' };
 
 async function loadDashboard() {
   const container = document.getElementById('dashboardView');
@@ -1813,8 +1815,6 @@ async function loadDashboard() {
     <div class="loading"><div class="spinner"></div> Carregando dados...</div>
   `;
 
-  // Fetch cards and columns across ALL boards (dashboard scope = whole team,
-  // independent of which aba the card is in, per explicit requirement).
   const [cardsRes, columnsRes] = await Promise.all([
     S.supabase.from('cards').select('*'),
     S.supabase.from('columns').select('id,color,board_id'),
@@ -1823,13 +1823,73 @@ async function loadDashboard() {
   if (cardsRes.error) { container.innerHTML = `<div class="dash-empty">Erro ao carregar dados: ${esc(cardsRes.error.message)}</div>`; return; }
   if (columnsRes.error) { container.innerHTML = `<div class="dash-empty">Erro ao carregar dados: ${esc(columnsRes.error.message)}</div>`; return; }
 
-  const allCards = cardsRes.data || [];
-  const allColumns = columnsRes.data || [];
+  S._dashRaw = { cards: cardsRes.data || [], columns: columnsRes.data || [] };
+  S.dashFilters = { board: '', member: '', priority: '' };
+  renderDashboardContent();
+}
+
+window.setDashFilter = (type, value) => {
+  S.dashFilters[type] = value;
+  renderDashboardContent();
+};
+
+window.clearDashFilters = () => {
+  S.dashFilters = { board: '', member: '', priority: '' };
+  renderDashboardContent();
+};
+
+function renderDashboardContent() {
+  const container = document.getElementById('dashboardView');
+  const { cards: allCardsRaw, columns: allColumns } = S._dashRaw;
   const colorByColId = {};
   allColumns.forEach(c => { colorByColId[c.id] = c.color; });
 
+  // ── Apply filters (client-side, on already-fetched data — instant, no refetch) ──
+  const f = S.dashFilters;
+  const allCards = allCardsRaw.filter(c => {
+    if (f.board && c.board_id !== f.board) return false;
+    if (f.priority && (c.priority||'') !== f.priority) return false;
+    if (f.member && !(c.members||[]).includes(f.member)) return false;
+    return true;
+  });
+
+  // ── Filter chips HTML ──
+  const boardChips = [`<button class="filter-chip ${f.board===''?'active':''}" onclick="setDashFilter('board','')">Todas</button>`]
+    .concat(S.boards.map(b => `<button class="filter-chip ${f.board===b.id?'active':''}" onclick="setDashFilter('board','${b.id}')">${esc(b.title)}</button>`)).join('');
+
+  const prioChipsDef = [['','Todas',null],['alta','Alta','#dc2626'],['baixa','Baixa','#16a34a'],['aguardando','Aguardando','#ca8a04']];
+  const prioChips = prioChipsDef.map(([val,label,dot]) => `
+    <button class="filter-chip ${f.priority===val?'active':''}" onclick="setDashFilter('priority','${val}')">
+      ${dot ? `<span class="chip-dot" style="background:${dot}"></span>` : ''}${label}
+    </button>`).join('');
+
+  const sortedMembers = Object.entries(S.members).sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
+  const memberChips = [`<button class="filter-chip ${f.member===''?'active':''}" onclick="setDashFilter('member','')">Todos</button>`]
+    .concat(sortedMembers.map(([uid,m]) => `
+      <button class="filter-chip ${f.member===uid?'active':''}" onclick="setDashFilter('member','${uid}')">
+        <span class="chip-dot" style="background:${m.color||'#94a3b8'}"></span>${esc(m.name)}
+      </button>`)).join('');
+
+  const anyFilterActive = !!(f.board || f.member || f.priority);
+
+  const filtersHtml = `
+    <div class="chips-filter-row" style="padding:0;border:none;background:none;margin-bottom:20px">
+      <span class="chips-filter-label">ABA</span>
+      <div class="chip-group">${boardChips}</div>
+      <span class="chips-filter-label">PRIORIDADE</span>
+      <div class="chip-group">${prioChips}</div>
+      <span class="chips-filter-label">RESPONSÁVEL</span>
+      <div class="chip-group">${memberChips}</div>
+      ${anyFilterActive ? `<button class="filter-clear" onclick="clearDashFilters()">✕ Limpar filtros</button>` : ''}
+    </div>
+  `;
+
   if (!allCards.length) {
-    container.innerHTML = `<h2 class="dashboard-title">Dashboard</h2><div class="dash-empty">Nenhum card encontrado ainda. Crie alguns cards para ver o desempenho aqui.</div>`;
+    container.innerHTML = `
+      <h2 class="dashboard-title">Dashboard</h2>
+      <p class="dashboard-subtitle">Desempenho geral — todas as abas, agrupado por responsável e prioridade</p>
+      ${filtersHtml}
+      <div class="dash-empty">Nenhum card encontrado para os filtros selecionados.</div>`;
     return;
   }
 
@@ -1839,12 +1899,9 @@ async function loadDashboard() {
   const completedCards = allCards.filter(c => finalColIds.has(c.column_id));
 
   // ── KPI: on-time completion rate ──
-  // "No prazo" = chegou na coluna final (completed_at) até a data de entrega (due_date).
-  // Cards concluídos sem completed_at registrado (dados anteriores a esta funcionalidade)
-  // não podem ser avaliados e entram como "não rastreado".
   let onTime = 0, late = 0, untracked = 0;
   completedCards.forEach(c => {
-    if (!c.due_date) return; // no due date to compare against — skip entirely
+    if (!c.due_date) return;
     if (!c.completed_at) { untracked++; return; }
     const completedDate = c.completed_at.split('T')[0];
     if (completedDate <= c.due_date) onTime++; else late++;
@@ -1852,7 +1909,7 @@ async function loadDashboard() {
   const trackedTotal = onTime + late;
   const onTimePct = trackedTotal > 0 ? Math.round((onTime/trackedTotal)*100) : null;
 
-  // ── By stage (column color category) ──
+  // ── By stage ──
   const stageLabels = { afazer:'A fazer', andamento:'Em andamento', revisao:'Em revisão', aprovacao:'Aprovação/Validação', concluido:'Concluído', custom:'Outras' };
   const stageCounts = {};
   allCards.forEach(c => {
@@ -1869,7 +1926,7 @@ async function loadDashboard() {
     prioCounts[label] = (prioCounts[label]||0) + 1;
   });
 
-  // ── By user (a card with multiple responsibles counts for each) ──
+  // ── By user ──
   const userCounts = {};
   const userCompleted = {};
   allCards.forEach(c => {
@@ -1885,6 +1942,7 @@ async function loadDashboard() {
   container.innerHTML = `
     <h2 class="dashboard-title">Dashboard</h2>
     <p class="dashboard-subtitle">Desempenho geral — todas as abas, agrupado por responsável e prioridade</p>
+    ${filtersHtml}
     <div class="dash-kpi-row">
       <div class="dash-kpi-card">
         <div class="dash-kpi-label">Total de Cards</div>
