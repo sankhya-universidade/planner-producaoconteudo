@@ -601,6 +601,15 @@ const DEFAULT_COLS = [
   {title:'Concluído',color:'concluido',ord:4},
 ];
 
+// Recognizes a "Concluído"-type column either by its stored style tag (new boards)
+// or by its title (older boards whose column wasn't tagged with color:'concluido').
+function isDoneColumn(col) {
+  if (!col) return false;
+  if (col.color === 'concluido') return true;
+  const t = (col.title || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return t.includes('conclu') || t.includes('finalizado');
+}
+
 // ═══════════════════════════════════════════
 // SUPABASE CONFIG
 // ═══════════════════════════════════════════
@@ -1111,7 +1120,7 @@ function cardHtml(card) {
   const dueHtml = card.due_date ? (()=>{
     const today = localDateString();
     const cardCol = (S.columns||[]).find(c => c.id === card.column_id);
-    const isDone = !!card.completed_at || (cardCol && cardCol.color === 'concluido');
+    const isDone = !!card.completed_at || isDoneColumn(cardCol);
     const cls = isDone ? 'due-ok' : (card.due_date < today ? 'due-over' : card.due_date === today ? 'due-today' : 'due-ok');
     return `<span class="card-due ${cls}">${ICON_CALENDAR} ${fmtDateShort(card.due_date)}</span>`;
   })() : '';
@@ -1202,7 +1211,7 @@ window.onDrop = (e, colId) => {
   // Determine if the destination column is a "final" (Concluído-type) column,
   // to track completed_at for the Dashboard's on-time completion metric.
   const targetCol = S.columns.find(c => c.id === colId);
-  const isFinalColumn = !!(targetCol && targetCol.color === 'concluido');
+  const isFinalColumn = isDoneColumn(targetCol);
   const completedAtValue = isFinalColumn ? new Date().toISOString() : null;
 
   // ── OPTIMISTIC UPDATE: move card in local state immediately ──
@@ -1281,7 +1290,7 @@ window.createCard = async (colId, title) => {
   if (!title) return;
   const ord = S.cards.filter(c=>c.column_id===colId).length;
   const targetCol = S.columns.find(c => c.id === colId);
-  const isFinalColumn = !!(targetCol && targetCol.color === 'concluido');
+  const isFinalColumn = isDoneColumn(targetCol);
   const { data, error } = await S.supabase.from('cards').insert({
     title, column_id: colId, ord, created_by: S.user.id,
     created_at: new Date().toISOString(),
@@ -1920,7 +1929,7 @@ function renderDashboardContent() {
 
   // ── KPI: totals ──
   const totalCards = allCards.length;
-  const finalColIds = new Set(allColumns.filter(c => c.color === 'concluido').map(c => c.id));
+  const finalColIds = new Set(allColumns.filter(c => isDoneColumn(c)).map(c => c.id));
   const completedCards = allCards.filter(c => finalColIds.has(c.column_id));
 
   // ── KPI: on-time completion rate ──
@@ -2062,7 +2071,7 @@ async function checkOverdueCards() {
     if (c.overdue_notified) return false; // already notified for this deadline
     if (!(c.members||[]).length) return false; // no one assigned to notify
     const col = S.columns.find(col => col.id === c.column_id);
-    if (col && col.color === 'concluido') return false; // already done
+    if (isDoneColumn(col)) return false; // already done
     return true;
   });
   if (!overdueCards.length) return;
